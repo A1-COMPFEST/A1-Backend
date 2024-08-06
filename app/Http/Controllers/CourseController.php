@@ -152,7 +152,7 @@ class CourseController extends Controller
     public function delete($id) {
         $course = Course::find($id);
 
-        Storage::delete('public/courses'.basename($course->image));
+        Storage::delete('public/courses' . basename($course->image));
 
         $course->delete();
 

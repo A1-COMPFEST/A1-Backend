@@ -13,6 +13,8 @@ Route::put('/courses/{id}', [CourseController::class, 'update']);
 Route::delete('/courses/{id}', [CourseController::class, 'delete']);
 
 Route::post('/courses/{course_id}/content', [ContentController::class, 'store']);
+Route::put('/courses/{course_id}/content/{id}', [ContentController::class, 'update']);
+Route::delete('/courses/{course_id}/content/{id}', [ContentController::class, 'delete']);
 
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/register', [AuthController::class, 'register']);
