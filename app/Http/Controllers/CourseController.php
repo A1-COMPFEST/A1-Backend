@@ -14,6 +14,7 @@ class CourseController extends Controller
     // GET POPULAR COURSE DATA WITH LIMIT=10
     public function popular() {
         $courses = Course::limit(10)->get();
+
         $courses->map(function($course) {
             return [
                 'id' => $course->id,
@@ -32,6 +33,7 @@ class CourseController extends Controller
         });
 
         return response()->json([
+            'message' => "Successfully get popular courses data",
             'courses' => $courses
         ]);
     }
@@ -187,6 +189,7 @@ class CourseController extends Controller
         ]);
     }
 
+    // GENERATE SLUG
     private function generateUniqueSlug($slug) {
         $originalSlug = $slug;
         $count = 1;

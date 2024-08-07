@@ -9,6 +9,36 @@ use Illuminate\Support\Facades\Validator;
 
 class ContentController extends Controller
 {
+    // GET ALL CONTENT DATA IN COURSE BY COURSE_ID
+    public function allContents($course_id) {
+        $contents = Content::where('course_id', $course_id)->get();
+
+        $contents->map(function($content) {
+            return [
+                'id' => $content->id,
+                'course_id' => $content->course_id,
+                'title' => $content->title,
+                'description' => $content->description,
+                'file' => $content->file
+            ];
+        });
+
+        return response()->json([
+            'message' => "Successfully get courses content data",
+            'contents' => $contents
+        ]);
+    }
+
+    // GET CONTENT DATA BY ID
+    public function detail($course_id, $id) {
+        $content = Content::find($id);
+
+        return response()->json([
+            'message' => "Successfully get content data with id = $id",
+            'content' => $content
+        ]);
+    }
+
     // ADD COURSE CONTENT DATA
     public function store(Request $request, $course_id) {
         // define validation rules
