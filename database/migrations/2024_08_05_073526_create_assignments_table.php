@@ -16,9 +16,9 @@ return new class extends Migration
             $table->foreignId('course_id')->constrained('courses')->onDelete('cascade');
             $table->foreignId('content_id')->constrained('contents')->onDelete('cascade');
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
-            $table->enum('status', ['assigned', 'late', 'done']);
+            $table->enum('status', ['assigned', 'late', 'done'])->nullable();
             $table->date('due_date');
-            $table->integer('grade');
+            $table->integer('grade')->nullable();
             $table->timestamps();
         });
     }

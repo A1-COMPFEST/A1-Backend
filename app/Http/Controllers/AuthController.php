@@ -52,7 +52,7 @@ class AuthController extends Controller
 
     }
 
-    public function register(Request $request) {
+    public function register(Request $request, $role) {
          // Validating request
          $validator = Validator::make($request->all(), [
             'name' => 'required',
@@ -71,7 +71,8 @@ class AuthController extends Controller
             'name' => $request->name,
             'email' => $request->email,
             'password' => $request->password,
-            'role' => 'user',
+            'role' => $role,
+            'balance' => 0
         ]);
 
         return response()->json([
@@ -80,6 +81,7 @@ class AuthController extends Controller
                 'name' => $user->name,
                 'email' => $user->email,
                 'role' => $user->role,
+                'balance' => $user->balance
             ]
         ]);
     }

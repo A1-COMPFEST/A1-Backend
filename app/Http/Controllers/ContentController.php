@@ -20,14 +20,17 @@ class ContentController extends Controller
 
         // check if validation fails
         if($validator->fails()) {
-            return response()->json($validator->errors(), 422);
+            return response()->json([
+                'message' => 'Invalid field',
+                'errors' => $validator->errors()
+            ], 422);
         }
 
         // upload file
         $file = $request->file('file');
         $filePath = $file->move(public_path() . '//contents/', $file->hashName());
 
-        //create content
+        //create new content
         $content = Content::create([
             'course_id' => $course_id,
             'title' => $request->title,
@@ -54,7 +57,10 @@ class ContentController extends Controller
 
         // check if validation fails
         if($validator->fails()) {
-            return response()->json($validator->errors(), 422);
+            return response()->json([
+                'message' => 'Invalid field',
+                'errors' => $validator->errors()
+            ], 422);
         }
 
         // data for update
