@@ -15,4 +15,8 @@ class Content extends Model
         'description',
         'file'
     ];
+
+    public function course() {
+        return $this->belongsTo(Course::class);
+    }
 }

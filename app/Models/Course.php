@@ -22,4 +22,8 @@ class Course extends Model
     public function instructor() {
         return $this->belongsTo(User::class);
     }
+
+    public function contents() {
+        return $this->hasMany(Content::class);
+    }
 }

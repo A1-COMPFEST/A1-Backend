@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Course;
+use App\Models\Enrollment;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
@@ -35,9 +36,28 @@ class CourseController extends Controller
         ]);
     }
 
+    // GET PURCHASED COURSES
+    public function purchased($user_id) {
+        // define validation rules
+        $enrollments = Enrollment::where('user_id', $user_id)
+            ->with('course')
+            ->get();
+        
+        return response()->json([
+            'message' => "Successfully get purchased course for user with id = $user_id",
+            'course' => $enrollments
+        ]);
+    }
+
     // GET COURSE DETAIL DATA
     public function detail($id) {
-        $course = Course::find($id);
+        $course = Course::with('contents')->find($id);
+
+        if (!$course) {
+            return response()->json([
+                'message' => "Course with id = $id not found",
+            ], 404);
+        }
 
         return response()->json([
             'message' => "Successfully get course details data with id = $id",
@@ -47,7 +67,7 @@ class CourseController extends Controller
 
     // ADD COURSE DATA
     public function store(Request $request) {
-        //define validation rules
+        // define validation rules
         $validator = Validator::make($request->all(), [
             'name' => 'required',
             'instructor_id' => 'required|exists:users,id',
@@ -59,7 +79,10 @@ class CourseController extends Controller
 
         // check if validation fails
         if($validator->fails()) {
-            return response()->json($validator->errors(), 422);
+            return response()->json([
+                'message' => 'Invalid field',
+                'errors' => $validator->errors()
+            ], 422);
         }
 
         // generate slug
@@ -72,7 +95,7 @@ class CourseController extends Controller
         $image = $request->file('image');
         $imagePath = $image->move(public_path() . '//courses/', $image->hashName());
 
-        // create course
+        // create new course
         $course = Course::create([
             'name' => $request->name,
             'slug' => $slug,
@@ -112,7 +135,10 @@ class CourseController extends Controller
 
         // check if validation fails
         if($validator->fails()) {
-            return response()->json($validator->errors(), 422);
+            return response()->json([
+                'message' => 'Invalid field',
+                'errors' => $validator->errors()
+            ], 422);
         }
 
         // generate slug
