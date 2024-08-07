@@ -36,13 +36,13 @@ class AuthController extends Controller
         }
 
         // Emang error di linter tp jalan kok :D
-        // $token = auth()->user()->createToken('auth')->plainTextToken;
+        $token = auth()->user()->createToken('auth')->plainTextToken;
 
         // HARUS BISA NGECEK INSTRUCTOR/USER
 
         return response()->json([
             'message' => 'Login success',
-            // 'token' => $token,
+            'token' => $token,
             'user' => [
                 'name' => auth()->user()->name,
                 'email' => auth()->user()->email,
@@ -58,7 +58,7 @@ class AuthController extends Controller
             'name' => 'required',
             'email' => 'required|email',
             'password' => 'required|min:8',
-        ]);
+        ]);  
 
         if($validator->fails()) {
             return response()->json([
@@ -81,6 +81,14 @@ class AuthController extends Controller
                 'email' => $user->email,
                 'role' => $user->role,
             ]
+        ]);
+    }
+
+    public function logout() {
+        auth()->user()->tokens()->delete();
+
+        return response()->json([
+            'message' => 'Logout success'
         ]);
     }
 }
