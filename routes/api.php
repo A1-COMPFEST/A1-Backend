@@ -24,3 +24,4 @@ Route::put('/api/topup/{user_id}', [UserController::class, 'topup']); // TOPUP B
 
 Route::post('/login', [AuthController::class, 'login']); // LOGIN USER
 Route::post('/register/{role}', [AuthController::class, 'register']); // REGISTER USER & INSTRUCTOR
+
