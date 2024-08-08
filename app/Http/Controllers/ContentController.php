@@ -98,11 +98,11 @@ class ContentController extends Controller
             'title' => $request->input('title', $content->title),
             'description' => $request->input('description', $content->description),
         ];
-        
+
         // handle file upload if provided
         if($request->hasFile('file')) {
             $file = $request->file('file');
-            $filePath = $file->move(public_path() . '//contents/', $file->hashName());
+            $filePath = $file->move(public_path() . "/contents/", $file->hashName());
         }
 
         $content->update($data);
