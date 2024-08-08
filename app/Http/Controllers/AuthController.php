@@ -48,7 +48,7 @@ class AuthController extends Controller
                 'email' => auth()->user()->email,
                 'role' => auth()->user()->role,
             ] 
-        ]);
+        ], 201);
 
     }
 
@@ -83,7 +83,7 @@ class AuthController extends Controller
                 'role' => $user->role,
                 'balance' => $user->balance
             ]
-        ]);
+        ], 201);
     }
 
     public function logout() {

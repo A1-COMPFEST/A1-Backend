@@ -8,7 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/courses/popular', [CourseController::class, 'popular']); // GET POPULAR COURSES WITH LIMIT 10
-Route::get('/api/courses/enrolled/{user_id}', [CourseController::class, 'purchased']); // GET PURCHASED COURSES
+Route::get('/courses/enrolled/{user_id}', [CourseController::class, 'purchased']); // GET PURCHASED COURSES
 Route::get('/courses/{id}', [CourseController::class, 'detail']); // GET DETAIL COURSE BY ID
 Route::post('/courses', [CourseController::class, 'store']); // ADD NEW COURSE
 Route::put('/courses/{id}', [CourseController::class, 'update']); // UPDATE COURSE BY ID

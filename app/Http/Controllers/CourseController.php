@@ -47,7 +47,7 @@ class CourseController extends Controller
         
         return response()->json([
             'message' => "Successfully get purchased course for user with id = $user_id",
-            'course' => $enrollments
+            'courses' => $enrollments
         ]);
     }
 
