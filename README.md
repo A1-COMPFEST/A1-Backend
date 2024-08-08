@@ -6,7 +6,8 @@
 localhost:8000/api/courses/popular
 ```
 
-#### Status : <p style="color:MediumSeaGreen; display:inline; font-weight:bold;">200</p> 
+#### Status : <p style="color:MediumSeaGreen; display:inline; font-weight:bold;">200</p>
+
 #### Content type : <p style="color:DodgerBlue; display:inline; font-weight:bold;">application/json</p>
 
 ### Response Sample
@@ -14,50 +15,8 @@ localhost:8000/api/courses/popular
 ```json
 {
     "message": "string",
-    "courses": [{
-        "id": 0,
-        "name": "string",
-        "slug": "string",
-        "instructor_id": 0,
-        "description": "string",
-        "syllabus": "string",
-        "image": "string",
-        "price": 0,
-        "created_at": "string", // "2024-08-07T09:49:26.000000Z"
-        "updated_at": "string", // "2024-08-07T09:49:26.000000Z"
-        "instructor": {
-            "id": 0,
-            "name": "string",
-            "email": "string",
-            "token": "string", // can be null
-            "role": "string",
-            "balance": 0,
-            "created_at": "string", // "2024-08-07T09:49:26.000000Z"
-            "updated_at": "string", // "2024-08-07T09:49:26.000000Z"
-        }
-    }]
-}
-```
-
-## <p style="color:MediumSeaGreen; display:inline; font-weight:bold;">GET</p> <p style="display:inline;">Purchased Courses By User Id</p>
-
-```
-localhost:8000/api/courses/enrolled/{user_id}
-```
-
-#### Status : <p style="color:MediumSeaGreen; display:inline; font-weight:bold;">200</p> 
-#### Content type : <p style="color:DodgerBlue; display:inline; font-weight:bold;">application/json</p>
-
-```json
-{
-    "message": "string",
-    "courses": [{
-        "id": 0,
-        "user_id": 0,
-        "course_id": 0,
-        "created_at": "string", // "2024-08-07T09:49:26.000000Z"
-        "updated_at": "string", // "2024-08-07T09:49:26.000000Z"
-        "course": {
+    "courses": [
+        {
             "id": 0,
             "name": "string",
             "slug": "string",
@@ -68,8 +27,55 @@ localhost:8000/api/courses/enrolled/{user_id}
             "price": 0,
             "created_at": "string", // "2024-08-07T09:49:26.000000Z"
             "updated_at": "string", // "2024-08-07T09:49:26.000000Z"
+            "instructor": {
+                "id": 0,
+                "name": "string",
+                "email": "string",
+                "token": "string", // can be null
+                "role": "string",
+                "balance": 0,
+                "created_at": "string", // "2024-08-07T09:49:26.000000Z"
+                "updated_at": "string" // "2024-08-07T09:49:26.000000Z"
+            }
         }
-    }]
+    ]
+}
+```
+
+## <p style="color:MediumSeaGreen; display:inline; font-weight:bold;">GET</p> <p style="display:inline;">Purchased Courses By User Id</p>
+
+```
+localhost:8000/api/courses/enrolled/{user_id}
+```
+
+#### Status : <p style="color:MediumSeaGreen; display:inline; font-weight:bold;">200</p>
+
+#### Content type : <p style="color:DodgerBlue; display:inline; font-weight:bold;">application/json</p>
+
+```json
+{
+    "message": "string",
+    "courses": [
+        {
+            "id": 0,
+            "user_id": 0,
+            "course_id": 0,
+            "created_at": "string", // "2024-08-07T09:49:26.000000Z"
+            "updated_at": "string", // "2024-08-07T09:49:26.000000Z"
+            "course": {
+                "id": 0,
+                "name": "string",
+                "slug": "string",
+                "instructor_id": 0,
+                "description": "string",
+                "syllabus": "string",
+                "image": "string",
+                "price": 0,
+                "created_at": "string", // "2024-08-07T09:49:26.000000Z"
+                "updated_at": "string" // "2024-08-07T09:49:26.000000Z"
+            }
+        }
+    ]
 }
 ```
 
@@ -79,7 +85,8 @@ localhost:8000/api/courses/enrolled/{user_id}
 localhost:8000/api/courses/{id}
 ```
 
-#### Status : <p style="color:MediumSeaGreen; display:inline; font-weight:bold;">200</p> 
+#### Status : <p style="color:MediumSeaGreen; display:inline; font-weight:bold;">200</p>
+
 #### Content type : <p style="color:DodgerBlue; display:inline; font-weight:bold;">application/json</p>
 
 ### Response Sample
@@ -98,15 +105,17 @@ localhost:8000/api/courses/{id}
         "price": 0,
         "created_at": "string", // "2024-08-07T09:49:26.000000Z"
         "updated_at": "string", // "2024-08-07T09:49:26.000000Z"
-        "contents": [{
-            "id": 0,
-            "course_id": 0,
-            "title": "string",
-            "description": "string",
-            "file": "string",
-            "created_at": "string", // "2024-08-07T09:49:26.000000Z"
-            "updated_at": "string", // "2024-08-07T09:49:26.000000Z"
-        }]
+        "contents": [
+            {
+                "id": 0,
+                "course_id": 0,
+                "title": "string",
+                "description": "string",
+                "file": "string",
+                "created_at": "string", // "2024-08-07T09:49:26.000000Z"
+                "updated_at": "string" // "2024-08-07T09:49:26.000000Z"
+            }
+        ]
     }
 }
 ```
@@ -117,21 +126,24 @@ localhost:8000/api/courses/{id}
 localhost:8000/api/courses/{course_id}/contents
 ```
 
-#### Status : <p style="color:MediumSeaGreen; display:inline; font-weight:bold;">200</p> 
+#### Status : <p style="color:MediumSeaGreen; display:inline; font-weight:bold;">200</p>
+
 #### Content type : <p style="color:DodgerBlue; display:inline; font-weight:bold;">application/json</p>
 
 ```json
 {
     "message": "string",
-    "contents": [{
-        "id": 0,
-        "course_id": 0,
-        "title": "string",
-        "description": "string",
-        "file": "string",
-        "created_at": "string", // "2024-08-07T09:49:26.000000Z"
-        "updated_at": "string", // "2024-08-07T09:49:26.000000Z"
-    }]
+    "contents": [
+        {
+            "id": 0,
+            "course_id": 0,
+            "title": "string",
+            "description": "string",
+            "file": "string",
+            "created_at": "string", // "2024-08-07T09:49:26.000000Z"
+            "updated_at": "string" // "2024-08-07T09:49:26.000000Z"
+        }
+    ]
 }
 ```
 
@@ -141,7 +153,8 @@ localhost:8000/api/courses/{course_id}/contents
 localhost:8000/api/courses/{course_id}/contents/{content_id}
 ```
 
-#### Status : <p style="color:MediumSeaGreen; display:inline; font-weight:bold;">200</p> 
+#### Status : <p style="color:MediumSeaGreen; display:inline; font-weight:bold;">200</p>
+
 #### Content type : <p style="color:DodgerBlue; display:inline; font-weight:bold;">application/json</p>
 
 ```json
@@ -154,7 +167,7 @@ localhost:8000/api/courses/{course_id}/contents/{content_id}
         "description": "string",
         "file": "string",
         "created_at": "string", // "2024-08-07T09:49:26.000000Z"
-        "updated_at": "string", // "2024-08-07T09:49:26.000000Z"
+        "updated_at": "string" // "2024-08-07T09:49:26.000000Z"
     }
 }
 ```
@@ -167,7 +180,8 @@ localhost:8000/api/courses/{course_id}/contents/{content_id}
 localhost:8000/api/register/{role}
 ```
 
-#### Status : <p style="color:MediumSeaGreen; display:inline; font-weight:bold;">201</p> 
+#### Status : <p style="color:MediumSeaGreen; display:inline; font-weight:bold;">201</p>
+
 #### Content type : <p style="color:DodgerBlue; display:inline; font-weight:bold;">application/json</p>
 
 ```json
@@ -188,7 +202,8 @@ localhost:8000/api/register/{role}
 localhost:8000/api/login
 ```
 
-#### Status : <p style="color:MediumSeaGreen; display:inline; font-weight:bold;">201</p> 
+#### Status : <p style="color:MediumSeaGreen; display:inline; font-weight:bold;">201</p>
+
 #### Content type : <p style="color:DodgerBlue; display:inline; font-weight:bold;">application/json</p>
 
 ```json
@@ -206,7 +221,7 @@ localhost:8000/api/login
 ## <p style="color:Violet; display:inline; font-weight:bold;">POST</p> <p style="display:inline;">Add New Course</p>
 
 ```
-localhost:8000/api/login
+localhost:8000/api/courses
 ```
 
 ```json
@@ -215,17 +230,29 @@ req.body = {
     "instructor_id": 0,
     "description": "string",
     "syllabus": "string",
-    "image": "string",
+    "image": (file: jpeg,png,jpg,gif,svg),
     "price": 0
 }
 ```
 
-#### Status : <p style="color:MediumSeaGreen; display:inline; font-weight:bold;">201</p> 
+#### Status : <p style="color:MediumSeaGreen; display:inline; font-weight:bold;">201</p>
+
 #### Content type : <p style="color:DodgerBlue; display:inline; font-weight:bold;">application/json</p>
 
 ```json
 {
-
+    "message": "string",
+    "course": {
+        "id": 0,
+        "name": "string",
+        "slug": "string",
+        "instructor_id": 0,
+        "description": "string",
+        "syllabus": "string",
+        "image": "string",
+        "price": 0,
+        "created_at": "string", // "2024-08-07T09:49:26.000000Z"
+        "updated_at": "string" // "2024-08-07T09:49:26.000000Z"
+    }
 }
 ```
-
