@@ -13,9 +13,11 @@ class Course extends Model
         'name',
         'slug',
         'instructor_id',
+        'category_id',
         'description',
         'syllabus',
         'image',
+        'level',
         'price',
     ];
 
@@ -23,7 +25,19 @@ class Course extends Model
         return $this->belongsTo(User::class);
     }
 
+    public function category() {
+        return $this->belongsTo(Category::class);
+    }
+
     public function contents() {
         return $this->hasMany(Content::class);
+    }
+
+    public function ratings() {
+        return $this->hasMany(Rating::class);
+    }
+
+    public function averageRating() {
+        return $this->ratings()->avg('rating');
     }
 }

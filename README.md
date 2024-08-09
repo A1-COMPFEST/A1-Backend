@@ -1,14 +1,14 @@
 # Sea Study API
 
-## <p style="color:MediumSeaGreen; display:inline; font-weight:bold;">GET</p> <p style="display:inline;">Popular Courses</p> (Limit=10)
+## GET - Popular Courses (Limit=10)
 
 ```
 localhost:8000/api/courses/popular
 ```
 
-#### Status : <p style="color:MediumSeaGreen; display:inline; font-weight:bold;">200</p>
+### Status : 200
 
-#### Content type : <p style="color:DodgerBlue; display:inline; font-weight:bold;">application/json</p>
+### Content type : application/json
 
 ### Response Sample
 
@@ -21,36 +21,31 @@ localhost:8000/api/courses/popular
             "name": "string",
             "slug": "string",
             "instructor_id": 0,
+            "instructor_name": "string",
+            "category_id": 0,
+            "category_name": "string",
             "description": "string",
             "syllabus": "string",
             "image": "string",
             "price": 0,
+            "level": "string",
+            "average_rating": "string",
             "created_at": "string", // "2024-08-07T09:49:26.000000Z"
-            "updated_at": "string", // "2024-08-07T09:49:26.000000Z"
-            "instructor": {
-                "id": 0,
-                "name": "string",
-                "email": "string",
-                "token": "string", // can be null
-                "role": "string",
-                "balance": 0,
-                "created_at": "string", // "2024-08-07T09:49:26.000000Z"
-                "updated_at": "string" // "2024-08-07T09:49:26.000000Z"
-            }
+            "updated_at": "string" // "2024-08-07T09:49:26.000000Z"
         }
     ]
 }
 ```
 
-## <p style="color:MediumSeaGreen; display:inline; font-weight:bold;">GET</p> <p style="display:inline;">Purchased Courses By User Id</p>
+## GET - Courses By Category Id
 
 ```
-localhost:8000/api/courses/enrolled/{user_id}
+localhost:8000/api/courses/category/{category_id}
 ```
 
-#### Status : <p style="color:MediumSeaGreen; display:inline; font-weight:bold;">200</p>
+### Status : 200
 
-#### Content type : <p style="color:DodgerBlue; display:inline; font-weight:bold;">application/json</p>
+### Content type : application/json
 
 ```json
 {
@@ -58,36 +53,106 @@ localhost:8000/api/courses/enrolled/{user_id}
     "courses": [
         {
             "id": 0,
-            "user_id": 0,
-            "course_id": 0,
+            "name": "string",
+            "slug": "string",
+            "instructor_id": 0,
+            "instructor_name": "string",
+            "category_id": 0,
+            "category_name": "string",
+            "description": "string",
+            "syllabus": "string",
+            "image": "string",
+            "price": 0,
+            "level": "string",
+            "average_rating": "string",
             "created_at": "string", // "2024-08-07T09:49:26.000000Z"
-            "updated_at": "string", // "2024-08-07T09:49:26.000000Z"
-            "course": {
-                "id": 0,
-                "name": "string",
-                "slug": "string",
-                "instructor_id": 0,
-                "description": "string",
-                "syllabus": "string",
-                "image": "string",
-                "price": 0,
-                "created_at": "string", // "2024-08-07T09:49:26.000000Z"
-                "updated_at": "string" // "2024-08-07T09:49:26.000000Z"
-            }
+            "updated_at": "string" // "2024-08-07T09:49:26.000000Z"
         }
     ]
 }
 ```
 
-## <p style="color:MediumSeaGreen; display:inline; font-weight:bold;">GET</p> <p style="display:inline;"> Course Detail By Id</p>
+## GET - Courses By Difficulty Level
+
+### Level dapat berupa : ['beginner', 'intermediate', 'professional']
+
+```
+localhost:8000/api/courses/level/{level}
+```
+
+### Status : 200
+
+### Content type : application/json
+
+```json
+{
+    "message": "string",
+    "courses": [
+        {
+            "id": 0,
+            "name": "string",
+            "slug": "string",
+            "instructor_id": 0,
+            "instructor_name": "string",
+            "category_id": 0,
+            "category_name": "string",
+            "description": "string",
+            "syllabus": "string",
+            "image": "string",
+            "price": 0,
+            "level": "string",
+            "average_rating": "string",
+            "created_at": "string", // "2024-08-07T09:49:26.000000Z"
+            "updated_at": "string" // "2024-08-07T09:49:26.000000Z"
+        }
+    ]
+}
+```
+
+## GET - Purchased Courses By User Id
+
+```
+localhost:8000/api/courses/enrolled/{user_id}
+```
+
+### Status : 200
+
+### Content type : application/json
+
+```json
+{
+    "message": "string",
+    "courses": [
+        {
+            "id": 0,
+            "name": "string",
+            "slug": "string",
+            "instructor_id": 0,
+            "instructor_name": "string",
+            "category_id": 0,
+            "category_name": "string",
+            "description": "string",
+            "syllabus": "string",
+            "image": "string",
+            "price": 0,
+            "level": "string",
+            "average_rating": "string",
+            "created_at": "string", // "2024-08-07T09:49:26.000000Z"
+            "updated_at": "string" // "2024-08-07T09:49:26.000000Z"
+        }
+    ]
+}
+```
+
+## GET - Course Detail By Id
 
 ```
 localhost:8000/api/courses/{id}
 ```
 
-#### Status : <p style="color:MediumSeaGreen; display:inline; font-weight:bold;">200</p>
+### Status : 200
 
-#### Content type : <p style="color:DodgerBlue; display:inline; font-weight:bold;">application/json</p>
+### Content type : application/json
 
 ### Response Sample
 
@@ -99,10 +164,15 @@ localhost:8000/api/courses/{id}
         "name": "string",
         "slug": "string",
         "instructor_id": 0,
+        "instructor_name": "string",
+        "category_id": 0,
+        "category_name": "string",
         "description": "string",
         "syllabus": "string",
         "image": "string",
         "price": 0,
+        "level": "string",
+        "average_rating": "string",
         "created_at": "string", // "2024-08-07T09:49:26.000000Z"
         "updated_at": "string", // "2024-08-07T09:49:26.000000Z"
         "contents": [
@@ -120,15 +190,15 @@ localhost:8000/api/courses/{id}
 }
 ```
 
-## <p style="color:MediumSeaGreen; display:inline; font-weight:bold;">GET</p> <p style="display:inline;">All Course Content By Course Id</p>
+## GET - All Course Content By Course Id
 
 ```
 localhost:8000/api/courses/{course_id}/contents
 ```
 
-#### Status : <p style="color:MediumSeaGreen; display:inline; font-weight:bold;">200</p>
+### Status : 200
 
-#### Content type : <p style="color:DodgerBlue; display:inline; font-weight:bold;">application/json</p>
+### Content type : application/json
 
 ```json
 {
@@ -147,15 +217,15 @@ localhost:8000/api/courses/{course_id}/contents
 }
 ```
 
-## <p style="color:MediumSeaGreen; display:inline; font-weight:bold;">GET</p> <p style="display:inline;">Detail Course Content By Content Id</p>
+## GET - Detail Course Content By Content Id
 
 ```
 localhost:8000/api/courses/{course_id}/contents/{content_id}
 ```
 
-#### Status : <p style="color:MediumSeaGreen; display:inline; font-weight:bold;">200</p>
+### Status : 200
 
-#### Content type : <p style="color:DodgerBlue; display:inline; font-weight:bold;">application/json</p>
+### Content type : application/json
 
 ```json
 {
@@ -172,17 +242,17 @@ localhost:8000/api/courses/{course_id}/contents/{content_id}
 }
 ```
 
-## <p style="color:Violet; display:inline; font-weight:bold;">POST</p> <p style="display:inline;">Register User & Instructor</p>
+## POST - Register User & Instructor
 
-#### Role dapat berupa : ['user', 'instructor', 'admin']
+### Role dapat berupa : ['user', 'instructor', 'admin']
 
 ```
 localhost:8000/api/register/{role}
 ```
 
-#### Status : <p style="color:MediumSeaGreen; display:inline; font-weight:bold;">201</p>
+### Status : 201
 
-#### Content type : <p style="color:DodgerBlue; display:inline; font-weight:bold;">application/json</p>
+### Content type : application/json
 
 ```json
 {
@@ -196,15 +266,15 @@ localhost:8000/api/register/{role}
 }
 ```
 
-## <p style="color:Violet; display:inline; font-weight:bold;">POST</p> <p style="display:inline;">Login User & Instructor</p>
+## POST - Login User & Instructor
 
 ```
 localhost:8000/api/login
 ```
 
-#### Status : <p style="color:MediumSeaGreen; display:inline; font-weight:bold;">201</p>
+### Status : 201
 
-#### Content type : <p style="color:DodgerBlue; display:inline; font-weight:bold;">application/json</p>
+### Content type : application/json
 
 ```json
 {
@@ -218,7 +288,7 @@ localhost:8000/api/login
 }
 ```
 
-## <p style="color:Violet; display:inline; font-weight:bold;">POST</p> <p style="display:inline;">Add New Course</p>
+## POST - Add New Course
 
 ```
 localhost:8000/api/courses
@@ -228,16 +298,18 @@ localhost:8000/api/courses
 req.body = {
     "name": "string",
     "instructor_id": 0,
+    "category_id": 0,
     "description": "string",
     "syllabus": "string",
     "image": (file: jpeg,png,jpg,gif,svg),
+    "level": "string", ["beginner", "intermediate", "professional"]
     "price": 0
 }
 ```
 
-#### Status : <p style="color:MediumSeaGreen; display:inline; font-weight:bold;">201</p>
+### Status : 201
 
-#### Content type : <p style="color:DodgerBlue; display:inline; font-weight:bold;">application/json</p>
+### Content type : application/json
 
 ```json
 {
@@ -251,6 +323,67 @@ req.body = {
         "syllabus": "string",
         "image": "string",
         "price": 0,
+        "created_at": "string", // "2024-08-07T09:49:26.000000Z"
+        "updated_at": "string" // "2024-08-07T09:49:26.000000Z"
+    }
+}
+```
+
+## POST - Add New Content
+
+```
+localhost:8000/api/courses/{course_id}/contents
+```
+
+```json
+req.body = {
+    "title": "string",
+    "description": "string",
+    "file": (file: pdf, mp4)
+}
+```
+
+### Status : 201
+
+### Content type : application/json
+
+```json
+{
+    "message": "string",
+    "content": {
+        "id": 0,
+        "course_id": 0,
+        "title": "string",
+        "description": "string",
+        "file": "string",
+        "created_at": "string", // "2024-08-07T09:49:26.000000Z"
+        "updated_at": "string" // "2024-08-07T09:49:26.000000Z"
+    }
+}
+```
+
+## POST - Add New Category
+
+```
+localhost:8000/api/category
+```
+
+```json
+req.body = {
+    "name": "string"
+}
+```
+
+### Status : 201
+
+### Content type : application/json
+
+```json
+{
+    "message": "string",
+    "category": {
+        "id": 0,
+        "name": "string",
         "created_at": "string", // "2024-08-07T09:49:26.000000Z"
         "updated_at": "string" // "2024-08-07T09:49:26.000000Z"
     }

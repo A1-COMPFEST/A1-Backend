@@ -11,26 +11,30 @@ use Illuminate\Support\Facades\Validator;
 
 class CourseController extends Controller
 {
-    // GET POPULAR COURSE DATA WITH LIMIT=10
+    // GET POPULAR COURSEs DATA WITH LIMIT=8
     public function popular() {
-        $courses = Course::limit(10)->get();
-
-        $courses->map(function($course) {
-            return [
-                'id' => $course->id,
-                'name' => $course->name,
-                'slug' => $course->slug,
-                'description' => $course->description,
-                'syllabus' => $course->syllabus,
-                'image' => $course->image,
-                'price' => $course->price,
-                'instructor' => [
-                    'name' => $course->instructor->name,
-                    'email' => $course->instructor->email,
-                ],
-                'created_at' => $course->created_at
-            ];
-        });
+        $courses = Course::with(['instructor', 'category'])
+            ->limit(8)
+            ->get()
+            ->map(function ($course) {
+                return [
+                    'id' => $course->id,
+                    'name' => $course->name,
+                    'slug' => $course->slug,
+                    'instructor_id' => $course->instructor_id,
+                    'instructor_name' => $course->instructor->name,
+                    'category_id' => $course->category_id,
+                    'category_name' => $course->category->name,
+                    'description' => $course->description,
+                    'syllabus' => $course->syllabus,
+                    'image' => $course->image,
+                    'price' => $course->price,
+                    'level' => $course->level,
+                    'average_rating' => number_format($course->averageRating(), 1),
+                    'created_at' => $course->created_at,
+                    'updated_at' => $course->updated_at,
+                ];
+            });
 
         return response()->json([
             'message' => "Successfully get popular courses data",
@@ -38,22 +42,110 @@ class CourseController extends Controller
         ]);
     }
 
+    // GET COURSEs BY CATEGORY ID
+    public function getCoursesByCategoryId($category_id) {
+        $courses = Course::where('category_id', $category_id)
+            ->with('instructor', 'category')
+            ->get();
+
+        $coursesData = $courses->map(function ($course) {
+            return [
+                'id' => $course->id,
+                'name' => $course->name,
+                'slug' => $course->slug,
+                'instructor_id' => $course->instructor_id,
+                'instructor_name' => $course->instructor->name,
+                'category_id' => $course->category_id,
+                'category_name' => $course->category ? $course->category->name : 'N/A',
+                'description' => $course->description,
+                'syllabus' => $course->syllabus,
+                'image' => $course->image,
+                'price' => $course->price,
+                'level' => $course->level,
+                'average_rating' => number_format($course->averageRating(), 1),
+                'created_at' => $course->created_at,
+                'updated_at' => $course->updated_at,
+                'average_rating' => number_format($course->averageRating(), 1),
+            ];
+        });
+
+        return response()->json([
+            'message' => "Successfully get courses data by category with id = $category_id",
+            'courses' => $coursesData,
+        ]);
+    }
+
+    // GET COURSES BY DIFFICULTY LEVEL
+    public function getCoursesByLevel($level) {
+        $courses = Course::where('level', $level)
+            ->with('instructor', 'category')
+            ->get();
+
+        $coursesData = $courses->map(function ($course) {
+            return [
+                'id' => $course->id,
+                'name' => $course->name,
+                'slug' => $course->slug,
+                'instructor_id' => $course->instructor_id,
+                'instructor_name' => $course->instructor->name,
+                'category_id' => $course->category_id,
+                'category_name' => $course->category ? $course->category->name : 'N/A',
+                'description' => $course->description,
+                'syllabus' => $course->syllabus,
+                'image' => $course->image,
+                'price' => $course->price,
+                'level' => $course->level,
+                'average_rating' => number_format($course->averageRating(), 1),
+                'created_at' => $course->created_at,
+                'updated_at' => $course->updated_at,
+                'average_rating' => number_format($course->averageRating(), 1),
+            ];
+        });
+
+        return response()->json([
+            'message' => "Successfully get courses data by difficulty level = $level",
+            'courses' => $coursesData,
+        ]);
+    }
+
     // GET PURCHASED COURSES
     public function purchased($user_id) {
-        // define validation rules
+        // fetch enrollments with related courses
         $enrollments = Enrollment::where('user_id', $user_id)
-            ->with('course')
+            ->with('course.instructor', 'course.category')
             ->get();
         
+        // map the enrollments to include the desired course details
+        $courses = $enrollments->map(function ($enrollment) {
+            $course = $enrollment->course;
+            return [
+                'id' => $course->id,
+                'name' => $course->name,
+                'slug' => $course->slug,
+                'instructor_id' => $course->instructor_id,
+                'instructor_name' => $course->instructor->name,
+                'category_id' => $course->category_id,
+                'category_name' => $course->category->name,
+                'description' => $course->description,
+                'syllabus' => $course->syllabus,
+                'image' => $course->image,
+                'price' => $course->price,
+                'level' => $course->level,
+                'average_rating' => number_format($course->averageRating(), 1),
+                'created_at' => $course->created_at,
+                'updated_at' => $course->updated_at,
+            ];
+        });
+    
         return response()->json([
-            'message' => "Successfully get purchased course for user with id = $user_id",
-            'courses' => $enrollments
+            'message' => "Successfully get purchased courses data for user with id = $user_id",
+            'courses' => $courses,
         ]);
     }
 
     // GET COURSE DETAIL DATA
     public function detail($id) {
-        $course = Course::with('contents')->find($id);
+        $course = Course::with(['contents', 'instructor', 'category'])->find($id);
 
         if (!$course) {
             return response()->json([
@@ -63,7 +155,24 @@ class CourseController extends Controller
 
         return response()->json([
             'message' => "Successfully get course details data with id = $id",
-            'courses' => $course,
+            'courses' => [
+                'id' => $course->id,
+                'name' => $course->name,
+                'slug' => $course->slug,
+                'instructor_id' => $course->instructor_id,
+                'instructor_name' => $course->instructor->name,
+                'category_id' => $course->category_id,
+                'category_name' => $course->category->name,
+                'description' => $course->description,
+                'syllabus' => $course->syllabus,
+                'image' => $course->image,
+                'price' => $course->price,
+                'level' => $course->level,
+                'average_rating' => number_format($course->averageRating(), 1),
+                'created_at' => $course->created_at,
+                'updated_at' => $course->updated_at,
+                'contents' => $course->contents
+            ],
         ], 200);
     }
 
@@ -73,9 +182,11 @@ class CourseController extends Controller
         $validator = Validator::make($request->all(), [
             'name' => 'required',
             'instructor_id' => 'required|exists:users,id',
+            'category_id' => 'required|exists:categories,id',
             'description' => 'required',
             'syllabus' => 'required',
             'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'level' => 'required',
             'price' => 'required',
         ]);
 
@@ -102,9 +213,11 @@ class CourseController extends Controller
             'name' => $request->name,
             'slug' => $slug,
             'instructor_id' => $request->instructor_id,
+            'category_id' => $request->category_id,
             'description' => $request->description,
             'syllabus' => $request->syllabus,
             'image' => $imagePath,
+            'level' => $request->level,
             'price' => $request->price
         ]);
 
@@ -129,10 +242,12 @@ class CourseController extends Controller
         // define validation rules
         $validator = Validator::make($request->all(), [
             'name' => 'sometimes|required',
+            'category_id' => 'sometimes|required',
             'description' => 'sometimes|required',
             'syllabus' => 'sometimes|required',
             'image' => 'sometimes|required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             'price' => 'sometimes|required',
+            'level' => 'sometimes|required'
         ]);
 
         // check if validation fails
@@ -155,9 +270,11 @@ class CourseController extends Controller
         $data = [
             'name' => $request->input('name', $course->name),
             'slug' => $slug,
+            'category_id' => $request->input('category_id', $course->category_id),
             'description' => $request->input('description', $course->description),
             'syllabus' => $request->input('syllabus', $course->syllabus),
             'price' => $request->input('price', $course->price),
+            'level' => $request->input('level', $course->level)
         ];
 
         // handle image upload if provided

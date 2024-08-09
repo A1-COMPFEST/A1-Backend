@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ContentController;
 use App\Http\Controllers\CourseController;
 use App\Http\Controllers\UserController;
@@ -14,6 +15,8 @@ Route::post('/logout', [AuthController::class, 'logout']);
 
 // Courses
 Route::get('/courses/popular', [CourseController::class, 'popular']); // GET POPULAR COURSES WITH LIMIT 10
+Route::get('/courses/category/{category_id}', [CourseController::class, 'getCoursesByCategoryId']); // GET COURSES BY CATEGORY ID
+Route::get('/courses/level/{level}', [CourseController::class, 'getCoursesByLevel']); // GET COURSES BY CATEGORY ID
 Route::get('/courses/enrolled/{user_id}', [CourseController::class, 'purchased']); // GET PURCHASED COURSES
 Route::get('/courses/{id}', [CourseController::class, 'detail']); // GET DETAIL COURSE BY ID
 Route::post('/courses', [CourseController::class, 'store']); // ADD NEW COURSE
@@ -29,3 +32,6 @@ Route::delete('/courses/{course_id}/contents/{id}', [ContentController::class, '
 
 // Balance
 Route::put('/topup/{user_id}', [UserController::class, 'topup']); // TOPUP BALANCE
+
+// Category
+Route::post('/category', [CategoryController::class, 'store']); // ADD NEW CATEGORY

@@ -16,9 +16,11 @@ return new class extends Migration
             $table->string('name');
             $table->string('slug');
             $table->foreignId('instructor_id')->constrained('users')->onDelete('cascade');
-            $table->string('description');
-            $table->string('syllabus');
+            $table->foreignId('category_id')->constrained('categories')->onDelete('cascade');
+            $table->text('description');
+            $table->text('syllabus');
             $table->string('image');
+            $table->enum('level', ['beginner', 'intermediate', 'professional']);
             $table->double('price');
             $table->timestamps();
         });
