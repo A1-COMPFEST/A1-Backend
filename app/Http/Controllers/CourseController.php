@@ -89,7 +89,7 @@ class CourseController extends Controller
                 'instructor_id' => $course->instructor_id,
                 'instructor_name' => $course->instructor->name,
                 'category_id' => $course->category_id,
-                'category_name' => $course->category ? $course->category->name : 'N/A',
+                'category_name' => $course->category->name,
                 'description' => $course->description,
                 'syllabus' => $course->syllabus,
                 'image' => $course->image,
@@ -108,6 +108,47 @@ class CourseController extends Controller
         ]);
     }
 
+    // GET COURSES BY RATINGS
+    public function getCoursesByRatingRange(Request $request) {
+        // get min and max rating from query parameters
+        $minRating = $request->query('min', 0);
+        $maxRating = $request->query('max', 5);
+
+        // get courses with average rating within the specified range
+        $courses = Course::with('ratings')
+            ->with('instructor', 'category')
+            ->get()
+            ->filter(function ($course) use ($minRating, $maxRating) {
+                $averageRating = $course->averageRating();
+                return $averageRating >= $minRating && $averageRating < $maxRating;
+            });
+
+        $coursesData = $courses->map(function ($course) {
+            return [
+                'id' => $course->id,
+                'name' => $course->name,
+                'slug' => $course->slug,
+                'instructor_id' => $course->instructor_id,
+                'instructor_name' => $course->instructor->name,
+                'category_id' => $course->category_id,
+                'category_name' => $course->category->name,
+                'description' => $course->description,
+                'syllabus' => $course->syllabus,
+                'image' => $course->image,
+                'price' => $course->price,
+                'level' => $course->level,
+                'average_rating' => number_format($course->averageRating(), 1),
+                'created_at' => $course->created_at,
+                'updated_at' => $course->updated_at,
+            ];
+        })->values();
+
+        return response()->json([
+            'message' => "Successfully retrieved courses with average rating between $minRating and $maxRating",
+            'courses' => $coursesData,
+        ]);
+    }
+
     // GET PURCHASED COURSES
     public function purchased($user_id) {
         // fetch enrollments with related courses
@@ -115,7 +156,6 @@ class CourseController extends Controller
             ->with('course.instructor', 'course.category')
             ->get();
         
-        // map the enrollments to include the desired course details
         $courses = $enrollments->map(function ($enrollment) {
             $course = $enrollment->course;
             return [

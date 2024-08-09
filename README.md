@@ -125,6 +125,41 @@ localhost:8000/api/courses/level/{level}
 }
 ```
 
+## **GET** - Courses By Ratings Range
+
+```
+localhost:8000/api//courses/ratings?min=0&max=5
+```
+
+### Status : 200
+
+### Content type : application/json
+
+```json
+{
+    "message": "string",
+    "courses": [
+        {
+            "id": 0,
+            "name": "string",
+            "slug": "string",
+            "instructor_id": 0,
+            "instructor_name": "string",
+            "category_id": 0,
+            "category_name": "string",
+            "description": "string",
+            "syllabus": "string",
+            "image": "string",
+            "price": 0,
+            "level": "string",
+            "average_rating": "string",
+            "created_at": "string", // "2024-08-07T09:49:26.000000Z"
+            "updated_at": "string" // "2024-08-07T09:49:26.000000Z"
+        }
+    ]
+}
+```
+
 ## **GET** - Purchased Courses By User Id
 
 ```
@@ -368,7 +403,7 @@ req.body = {
     "message": "string",
     "content": {
         "id": 0,
-        "course_id": 0,
+        "course_id": "string",
         "title": "string",
         "description": "string",
         "file": "string",
@@ -401,6 +436,110 @@ req.body = {
         "id": 0,
         "name": "string",
         "created_at": "string", // "2024-08-07T09:49:26.000000Z"
+        "updated_at": "string" // "2024-08-07T09:49:26.000000Z"
+    }
+}
+```
+
+## **POST** - Add New Ratings
+
+```
+localhost:8000/api/courses/{courses_id}/ratings/{user_id}
+```
+
+```json
+req.body = {
+    "rating": "string",
+    "comments": "string"
+}
+```
+
+### Status : 201
+
+### Content type : application/json
+
+```json
+{
+    "message": "string",
+    "rating": {
+        "id": 0,
+        "user_id": "string",
+        "course_id": "string",
+        "rating": "string",
+        "comments": "string",
+        "created_at": "string", // "2024-08-07T09:49:26.000000Z"
+        "updated_at": "string" // "2024-08-07T09:49:26.000000Z"
+    }
+}
+```
+
+## **PUT** - Update Course By Id
+
+```
+localhost:8000/api/courses/{id}
+```
+
+```json
+req.body = {
+    "name": "string",
+    "category_id": 0,
+    "description": "string",
+    "syllabus": "string",
+    "image": (file: jpeg,png,jpg,gif,svg),
+    "price": 0,
+    "level": "string"
+}
+```
+
+### Status : 201
+
+### Content type : application/json
+
+```json
+    "message": "string",
+    "course": {
+        "id": 1,
+        "name": "string",
+        "slug": "string",
+        "instructor_id": 0,
+        "category_id": 0,
+        "description": "string",
+        "syllabus": "string",
+        "image": "string",
+        "level": "string",
+        "price": 0,
+        "created_at": "string", // "2024-08-07T09:49:26.000000Z"
+        "updated_at": "string" // "2024-08-07T09:49:26.000000Z"
+    }
+```
+
+## **PUT** - Top Up Balance User
+
+```
+localhost:8000/api/topup/{user_id}
+```
+
+```json
+req.body = {
+    "balance": 0,
+}
+```
+
+### Status : 201
+
+### Content type : application/json
+
+```json
+{
+    "message": "string",
+    "user": {
+        "id": 0,
+        "name": "string",
+        "email": "string",
+        "token": null,
+        "role": "user",
+        "balance": 0,
+        "created_at": "string", // "2024-08-07T09:49:26.000000Z",
         "updated_at": "string" // "2024-08-07T09:49:26.000000Z"
     }
 }

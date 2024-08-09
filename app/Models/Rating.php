@@ -15,4 +15,12 @@ class Rating extends Model
         'rating',
         'comments'
     ];
+
+    public function course() {
+        return $this->belongsTo(Course::class);
+    }
+
+    public function user() {
+        return $this->belongsTo(User::class);
+    }
 }
