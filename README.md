@@ -1,6 +1,22 @@
-# Sea Study API
+# **Sea Study API**
 
-## GET - Popular Courses (Limit=10)
+## **HOW TO USE**
+
+-   **Ensure Required Software:** Make sure you have XAMPP, Laragon, or another PHP server installed.
+-   **Clone the Repository:** Clone this repository to your local machine.
+-   **Install Dependencies:** In the terminal, navigate to the project directory and run:
+
+```bash
+composer install
+```
+
+-   **Run the Server:** Start the Laravel development server by executing:
+
+```bash
+php artisan serve
+```
+
+## **GET** - Popular Courses (Limit=10)
 
 ```
 localhost:8000/api/courses/popular
@@ -37,7 +53,7 @@ localhost:8000/api/courses/popular
 }
 ```
 
-## GET - Courses By Category Id
+## **GET** - Courses By Category Id
 
 ```
 localhost:8000/api/courses/category/{category_id}
@@ -72,7 +88,7 @@ localhost:8000/api/courses/category/{category_id}
 }
 ```
 
-## GET - Courses By Difficulty Level
+## **GET** - Courses By Difficulty Level
 
 ### Level dapat berupa : ['beginner', 'intermediate', 'professional']
 
@@ -109,7 +125,7 @@ localhost:8000/api/courses/level/{level}
 }
 ```
 
-## GET - Purchased Courses By User Id
+## **GET** - Purchased Courses By User Id
 
 ```
 localhost:8000/api/courses/enrolled/{user_id}
@@ -144,7 +160,7 @@ localhost:8000/api/courses/enrolled/{user_id}
 }
 ```
 
-## GET - Course Detail By Id
+## **GET** - Course Detail By Id
 
 ```
 localhost:8000/api/courses/{id}
@@ -190,7 +206,7 @@ localhost:8000/api/courses/{id}
 }
 ```
 
-## GET - All Course Content By Course Id
+## **GET** - All Course Content By Course Id
 
 ```
 localhost:8000/api/courses/{course_id}/contents
@@ -217,7 +233,7 @@ localhost:8000/api/courses/{course_id}/contents
 }
 ```
 
-## GET - Detail Course Content By Content Id
+## **GET** - Detail Course Content By Content Id
 
 ```
 localhost:8000/api/courses/{course_id}/contents/{content_id}
@@ -242,7 +258,7 @@ localhost:8000/api/courses/{course_id}/contents/{content_id}
 }
 ```
 
-## POST - Register User & Instructor
+## **POST** - Register User & Instructor
 
 ### Role dapat berupa : ['user', 'instructor', 'admin']
 
@@ -266,7 +282,7 @@ localhost:8000/api/register/{role}
 }
 ```
 
-## POST - Login User & Instructor
+## **POST** - Login User & Instructor
 
 ```
 localhost:8000/api/login
@@ -288,7 +304,7 @@ localhost:8000/api/login
 }
 ```
 
-## POST - Add New Course
+## **POST** - Add New Course
 
 ```
 localhost:8000/api/courses
@@ -329,7 +345,7 @@ req.body = {
 }
 ```
 
-## POST - Add New Content
+## **POST** - Add New Content
 
 ```
 localhost:8000/api/courses/{course_id}/contents
@@ -362,7 +378,7 @@ req.body = {
 }
 ```
 
-## POST - Add New Category
+## **POST** - Add New Category
 
 ```
 localhost:8000/api/category
