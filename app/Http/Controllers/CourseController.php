@@ -386,7 +386,8 @@ class CourseController extends Controller
         }
 
         if ($request->has('difficulty')) {
-            $query->where('level', $request->input('difficulty'));
+            $difficulties = explode(',', $request->input('difficulty'));
+            $query->whereIn('courses.level', $difficulties);
         }
 
         if ($request->has('min_rating')) {
