@@ -12,7 +12,8 @@ use Illuminate\Support\Facades\Validator;
 class CourseController extends Controller
 {
     // GET POPULAR COURSEs DATA WITH LIMIT=8
-    public function popular() {
+    public function popular()
+    {
         $courses = Course::with(['instructor', 'category'])
             ->limit(8)
             ->get()
@@ -43,7 +44,8 @@ class CourseController extends Controller
     }
 
     // GET COURSEs BY CATEGORY ID
-    public function getCoursesByCategoryId($category_id) {
+    public function getCoursesByCategoryId($category_id)
+    {
         $courses = Course::where('category_id', $category_id)
             ->with('instructor', 'category')
             ->get();
@@ -76,7 +78,8 @@ class CourseController extends Controller
     }
 
     // GET COURSES BY DIFFICULTY LEVEL
-    public function getCoursesByLevel($level) {
+    public function getCoursesByLevel($level)
+    {
         $courses = Course::where('level', $level)
             ->with('instructor', 'category')
             ->get();
@@ -109,7 +112,8 @@ class CourseController extends Controller
     }
 
     // GET COURSES BY RATINGS
-    public function getCoursesByRatingRange(Request $request) {
+    public function getCoursesByRatingRange(Request $request)
+    {
         // get min and max rating from query parameters
         $minRating = $request->query('min', 0);
         $maxRating = $request->query('max', 5);
@@ -150,12 +154,13 @@ class CourseController extends Controller
     }
 
     // GET PURCHASED COURSES
-    public function purchased($user_id) {
+    public function purchased($user_id)
+    {
         // fetch enrollments with related courses
         $enrollments = Enrollment::where('user_id', $user_id)
             ->with('course.instructor', 'course.category')
             ->get();
-        
+
         $courses = $enrollments->map(function ($enrollment) {
             $course = $enrollment->course;
             return [
@@ -176,7 +181,7 @@ class CourseController extends Controller
                 'updated_at' => $course->updated_at,
             ];
         });
-    
+
         return response()->json([
             'message' => "Successfully get purchased courses data for user with id = $user_id",
             'courses' => $courses,
@@ -184,7 +189,8 @@ class CourseController extends Controller
     }
 
     // GET COURSE DETAIL DATA
-    public function detail($id) {
+    public function detail($id)
+    {
         $course = Course::with(['contents', 'instructor', 'category'])->find($id);
 
         if (!$course) {
@@ -217,7 +223,8 @@ class CourseController extends Controller
     }
 
     // ADD COURSE DATA
-    public function store(Request $request) {
+    public function store(Request $request)
+    {
         // define validation rules
         $validator = Validator::make($request->all(), [
             'name' => 'required',
@@ -231,7 +238,7 @@ class CourseController extends Controller
         ]);
 
         // check if validation fails
-        if($validator->fails()) {
+        if ($validator->fails()) {
             return response()->json([
                 'message' => 'Invalid field',
                 'errors' => $validator->errors()
@@ -268,16 +275,17 @@ class CourseController extends Controller
     }
 
     // UPDATE COURSE DATA BY ID
-    public function update(Request $request, $id) {
+    public function update(Request $request, $id)
+    {
         // find course by id
         $course = Course::find($id);
 
         // check if course exists
-        if(!$course) {
+        if (!$course) {
             return response()->json([
                 'message' => 'Course not found'
             ]);
-        }   
+        }
 
         // define validation rules
         $validator = Validator::make($request->all(), [
@@ -291,7 +299,7 @@ class CourseController extends Controller
         ]);
 
         // check if validation fails
-        if($validator->fails()) {
+        if ($validator->fails()) {
             return response()->json([
                 'message' => 'Invalid field',
                 'errors' => $validator->errors()
@@ -300,7 +308,7 @@ class CourseController extends Controller
 
         // generate slug
         $slug = $course->slug;
-        if($request->has('name')) {
+        if ($request->has('name')) {
             $name = $request->input('name');
             $slug = Str::slug($name);
             $slug = $this->generateUniqueSlug($slug);
@@ -334,7 +342,8 @@ class CourseController extends Controller
     }
 
     // DELETE COURSE DATA BY ID
-    public function delete($id) {
+    public function delete($id)
+    {
         $course = Course::find($id);
 
         Storage::delete('public/courses' . basename($course->image));
@@ -347,7 +356,8 @@ class CourseController extends Controller
     }
 
     // GENERATE SLUG
-    private function generateUniqueSlug($slug) {
+    private function generateUniqueSlug($slug)
+    {
         $originalSlug = $slug;
         $count = 1;
 
@@ -358,6 +368,68 @@ class CourseController extends Controller
         }
 
         return $slug;
+    }
+
+    // GET COURSE WITH FILTERS
+
+    public function filterCourses(Request $request)
+    {
+        $query = Course::with(['instructor', 'category']);
+
+        // Apply filters if they exist
+        if ($request->has('name')) {
+            $query->where('name', 'LIKE', '%' . $request->input('name') . '%');
+        }
+
+        if ($request->has('category_id')) {
+            $query->where('category_id', $request->input('category_id'));
+        }
+
+        if ($request->has('difficulty')) {
+            $query->where('level', $request->input('difficulty'));
+        }
+
+        if ($request->has('min_rating')) {
+            $minRating = $request->input('min_rating');
+            $query->whereHas('ratings', function ($q) use ($minRating) {
+                $q->havingRaw('AVG(rating) >= ?', [$minRating]);
+            });
+        }
+
+        // Hardcoded pagination to 10 items per page
+        $perPage = 10;
+        $currentPage = $request->input('current_page', 1); // Default to page 1 if not provided
+
+        $courses = $query->paginate($perPage, ['*'], 'page', $currentPage);
+
+        // Transform data for response
+        $coursesData = $courses->map(function ($course) {
+            return [
+                'id' => $course->id,
+                'name' => $course->name,
+                'slug' => $course->slug,
+                'instructor_id' => $course->instructor_id,
+                'instructor_name' => $course->instructor->name,
+                'category_id' => $course->category_id,
+                'category_name' => $course->category ? $course->category->name : 'N/A',
+                'description' => $course->description,
+                'syllabus' => $course->syllabus,
+                'image' => $course->image,
+                'price' => $course->price,
+                'level' => $course->level,
+                'average_rating' => number_format($course->averageRating(), 1),
+                'created_at' => $course->created_at,
+                'updated_at' => $course->updated_at,
+            ];
+        });
+
+        return response()->json([
+            'message' => "Successfully fetched courses",
+            'courses' => $coursesData,
+            'current_page' => $courses->currentPage(),
+            'last_page' => $courses->lastPage(),
+            'total' => $courses->total(),
+        ]);
     }
 
 }
