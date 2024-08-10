@@ -21,6 +21,7 @@ Route::get('/courses/category/{category_id}', [CourseController::class, 'getCour
 Route::get('/courses/level/{level}', [CourseController::class, 'getCoursesByLevel']); // GET COURSES BY DIFFICULTY LEVEL
 Route::get('/courses/ratings', [CourseController::class, 'getCoursesByRatingRange']); // GET COURSES BY RATINGS RANGE
 Route::get('/courses/enrolled/{user_id}', [CourseController::class, 'purchased']); // GET PURCHASED COURSES
+Route::get('/courses/filter', [CourseController::class, 'filterCourses']);
 Route::get('/courses/{id}', [CourseController::class, 'detail']); // GET DETAIL COURSE BY ID
 Route::post('/courses', [CourseController::class, 'store']); // ADD NEW COURSE
 Route::put('/courses/{id}', [CourseController::class, 'update']); // UPDATE COURSE BY ID
