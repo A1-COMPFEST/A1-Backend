@@ -4,6 +4,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ContentController;
 use App\Http\Controllers\CourseController;
+use App\Http\Controllers\EnrollmentController;
 use App\Http\Controllers\RatingController;
 use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
@@ -40,3 +41,7 @@ Route::post('/category', [CategoryController::class, 'store']); // ADD NEW CATEG
 
 // Ratings
 Route::post('/courses/{courses_id}/ratings/{user_id}', [RatingController::class, 'addRatings']); // ADD NEW RATINGS
+
+// Enrollment
+Route::get('enrollment/{course_id}', [EnrollmentController::class, 'getUsersByCourseId']); // ADD
+Route::post('/enrollment/{course_id}/{user_id}', [EnrollmentController::class, 'store']); // ADD NEW ENROLLMENT
