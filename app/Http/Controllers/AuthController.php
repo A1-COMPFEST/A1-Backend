@@ -94,4 +94,14 @@ class AuthController extends Controller
             'message' => 'Logout success'
         ]);
     }
+
+
+    public function logoff(Request $request) {
+        $user = User::firstWhere('token', $request->bearerToken());
+        $user->update(['token' => null]);
+
+        return response()->json([
+            'message' => 'Logout success'
+        ]);
+    }
 }

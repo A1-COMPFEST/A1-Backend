@@ -297,8 +297,8 @@ class CourseController extends Controller
         if (!$course) {
             return response()->json([
                 'message' => 'Course not found'
-            ]);
-        }
+            ], 404);
+        }   
 
         // define validation rules
         $validator = Validator::make($request->all(), [
@@ -320,8 +320,9 @@ class CourseController extends Controller
         }
 
         // generate slug
-        $slug = $course->slug;
-        if ($request->has('name')) {
+        $slug = str($course)->slug();
+
+        if($request->has('name')) {
             $name = $request->input('name');
             $slug = Str::slug($name);
             $slug = $this->generateUniqueSlug($slug);
