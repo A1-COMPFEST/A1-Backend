@@ -11,6 +11,10 @@ use Illuminate\Support\Facades\Validator;
 
 class CourseController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth:sanctum');
+    }
     // GET POPULAR COURSEs DATA WITH LIMIT=8
     public function popular()
     {
@@ -156,6 +160,15 @@ class CourseController extends Controller
     // GET PURCHASED COURSES
     public function purchased($user_id)
     {
+
+        // check if user is authenticated
+        $authenticatedUser = auth()->user();
+
+        if (!$authenticatedUser || $authenticatedUser->id != $user_id) {
+            return response()->json([
+                'message' => 'Unauthorized access to purchased courses data',
+            ], 403); // 403 Forbidden
+        }
         // fetch enrollments with related courses
         $enrollments = Enrollment::where('user_id', $user_id)
             ->with('course.instructor', 'course.category')
