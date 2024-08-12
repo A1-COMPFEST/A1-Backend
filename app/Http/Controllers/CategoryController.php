@@ -9,14 +9,15 @@ use Illuminate\Support\Facades\Validator;
 class CategoryController extends Controller
 {
     // ADD NEW CATEGORY
-    public function store(Request $request) {
+    public function store(Request $request)
+    {
         // define validation rules
         $validator = Validator::make($request->all(), [
             'name' => 'required'
         ]);
 
         // check if validation fails
-        if($validator->fails()) {
+        if ($validator->fails()) {
             return response()->json([
                 'message' => 'Invalid field',
                 'errors' => $validator->errors()
@@ -32,5 +33,16 @@ class CategoryController extends Controller
             'message' => 'Successfully created new course',
             'category' => $category
         ], 201);
+    }
+    
+    // GET UNIQUE CATEGORY
+    public function getUniqueCategories()
+    {
+        $categories = Category::select('id', 'name')->distinct()->get();
+
+        return response()->json([
+            'message' => 'Successfully fetched unique categories',
+            'categories' => $categories,
+        ]);
     }
 }
