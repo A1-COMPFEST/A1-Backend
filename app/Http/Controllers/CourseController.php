@@ -11,6 +11,10 @@ use Illuminate\Support\Facades\Validator;
 
 class CourseController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth:sanctum')->only(['purchased']);
+    }
     // GET POPULAR COURSEs DATA WITH LIMIT=8
     public function popular()
     {
@@ -156,10 +160,23 @@ class CourseController extends Controller
     // GET PURCHASED COURSES
     public function purchased($user_id)
     {
-        // fetch enrollments with related courses
+
+        // check if user is authenticated
+        $authenticatedUser = auth()->user();
+
+        if (!$authenticatedUser || $authenticatedUser->id != $user_id) {
+            return response()->json([
+                'message' => 'Unauthorized access to purchased courses data',
+            ], 403); // 403 Forbidden
+        }
+        // paginate
+        $perPage = 8;
+        $currentPage = request()->input('page', 1);
+
+
         $enrollments = Enrollment::where('user_id', $user_id)
             ->with('course.instructor', 'course.category')
-            ->get();
+            ->paginate($perPage, ['*'], 'page', $currentPage);
 
         $courses = $enrollments->map(function ($enrollment) {
             $course = $enrollment->course;
@@ -185,6 +202,9 @@ class CourseController extends Controller
         return response()->json([
             'message' => "Successfully get purchased courses data for user with id = $user_id",
             'courses' => $courses,
+            'current_page' => $enrollments->currentPage(),
+            'last_page' => $enrollments->lastPage(),
+            'total' => $enrollments->total(),
         ]);
     }
 
@@ -285,7 +305,7 @@ class CourseController extends Controller
             return response()->json([
                 'message' => 'Course not found'
             ], 404);
-        }   
+        }
 
         // define validation rules
         $validator = Validator::make($request->all(), [
@@ -309,7 +329,7 @@ class CourseController extends Controller
         // generate slug
         $slug = str($course)->slug();
 
-        if($request->has('name')) {
+        if ($request->has('name')) {
             $name = $request->input('name');
             $slug = Str::slug($name);
             $slug = $this->generateUniqueSlug($slug);
@@ -387,7 +407,8 @@ class CourseController extends Controller
         }
 
         if ($request->has('difficulty')) {
-            $query->where('level', $request->input('difficulty'));
+            $difficulties = explode(',', $request->input('difficulty'));
+            $query->whereIn('courses.level', $difficulties);
         }
 
         if ($request->has('min_rating')) {
@@ -398,8 +419,8 @@ class CourseController extends Controller
         }
 
         // Hardcoded pagination to 10 items per page
-        $perPage = 10;
-        $currentPage = $request->input('current_page', 1); // Default to page 1 if not provided
+        $perPage = 3;
+        $currentPage = $request->input('page', 1); // Default to page 1 if not provided
 
         $courses = $query->paginate($perPage, ['*'], 'page', $currentPage);
 

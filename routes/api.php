@@ -35,13 +35,16 @@ Route::put('/courses/contents/{id}', [ContentController::class, 'update']); // U
 Route::delete('/courses/contents/{id}', [ContentController::class, 'delete']); // DELETE CONTENT
 
 // Balance
-Route::put('/topup/{user_id}', [UserController::class, 'topup']); // TOPUP BALANCE
+Route::post('/topup/{user_id}', [UserController::class, 'topup']); // TOPUP BALANCE
+Route::get('/balance/{user_id}', [UserController::class, 'getBalance']); // GET BALANCE
 
 // Category
 Route::post('/category', [CategoryController::class, 'store']); // ADD NEW CATEGORY
+Route::get('/category', [CategoryController::class, 'getUniqueCategories']); // GET UNIQUE CATEGORIES
 
 // Ratings
 Route::post('/courses/{courses_id}/ratings/{user_id}', [RatingController::class, 'addRatings']); // ADD NEW RATINGS
+
 
 // Enrollment
 Route::get('enrollment/{course_id}', [EnrollmentController::class, 'getUsersByCourseId']); // ADD
