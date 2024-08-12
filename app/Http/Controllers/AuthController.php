@@ -35,11 +35,15 @@ class AuthController extends Controller
             ], 401);
         }
 
-        // Emang error di linter tp jalan kok :D
-        $token = auth()->user()->createToken('auth')->plainTextToken;
+        $token = uuid_create();
+        $user = User::find(auth()->user()->id);
 
+        $user->update([
+            'token' => $token
+        ]);
+        
+        
         // HARUS BISA NGECEK INSTRUCTOR/USER
-
         return response()->json([
             'message' => 'Login success',
             'token' => $token,
@@ -88,17 +92,11 @@ class AuthController extends Controller
     }
 
     public function logout() {
-        auth()->user()->tokens()->delete();
+        $user = User::find(auth()->user()->id);
         
-        return response()->json([
-            'message' => 'Logout success'
+        $user->update([
+          'token' => null  
         ]);
-    }
-
-
-    public function logoff(Request $request) {
-        $user = User::firstWhere('token', $request->bearerToken());
-        $user->update(['token' => null]);
 
         return response()->json([
             'message' => 'Logout success'
