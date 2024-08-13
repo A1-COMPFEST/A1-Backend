@@ -23,6 +23,7 @@ Route::middleware('user')->group(function() {
     Route::get('/courses/level/{level}', [CourseController::class, 'getCoursesByLevel']); // GET COURSES BY DIFFICULTY LEVEL
     Route::get('/courses/ratings', [CourseController::class, 'getCoursesByRatingRange']); // GET COURSES BY RATINGS RANGE
     Route::get('/courses/enrolled/{user_id}', [CourseController::class, 'purchased']); // GET PURCHASED COURSES
+    Route::get('/courses/instructor/{instructor_id}', [CourseController::class, 'getInstructorCourse']); // GET COURSES BY INSTRUCTOR ID
     Route::get('/courses/filter', [CourseController::class, 'filterCourses']);
     Route::get('/courses/{id}', [CourseController::class, 'detail']); // GET DETAIL COURSE BY ID
     Route::post('/courses', [CourseController::class, 'store']); // ADD NEW COURSE
@@ -45,10 +46,11 @@ Route::middleware('user')->group(function() {
     Route::get('/category', [CategoryController::class, 'getUniqueCategories']); // GET UNIQUE CATEGORIES
     
     // Ratings
-    Route::post('/courses/{courses_id}/ratings/{user_id}', [RatingController::class, 'addRatings']); // ADD NEW RATINGS
+    Route::get('/courses/{course_id}/ratings', [RatingController::class, 'getRatingsForCourse']); // GET RATINGS BY COURSE ID
+    Route::post('/courses/{course_id}/ratings/{user_id}', [RatingController::class, 'addRatings']); // ADD NEW RATINGS
     
 
     // Enrollment
-    Route::get('enrollment/{course_id}', [EnrollmentController::class, 'getUsersByCourseId']); // ADD    Route::post('/enrollment/{course_id}/{user_id}', [EnrollmentController::class, 'store']); // ADD NEW ENROLLMENT
-
+    Route::get('enrollment/{course_id}', [EnrollmentController::class, 'getUsersByCourseId']); // GET ALL USERS ENROLLED IN THE COURSE
+    Route::post('/enrollment/{course_id}/{user_id}', [EnrollmentController::class, 'store']); // ADD NEW ENROLLMENT
 });

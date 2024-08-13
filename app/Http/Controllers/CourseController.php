@@ -33,7 +33,7 @@ class CourseController extends Controller
                     'category_name' => $course->category->name,
                     'description' => $course->description,
                     'brief' => $course->brief,
-                    'image' => $course->image,
+                    'image' => 'http://localhost:8000/images/'.$course->image,
                     'price' => $course->price,
                     'level' => $course->level,
                     'average_rating' => number_format($course->averageRating(), 1),
@@ -66,7 +66,7 @@ class CourseController extends Controller
                 'category_name' => $course->category ? $course->category->name : 'N/A',
                 'description' => $course->description,
                 'brief' => $course->brief,
-                'image' => $course->image,
+                'image' => 'http://localhost:8000/images/'.$course->image,
                 'price' => $course->price,
                 'level' => $course->level,
                 'average_rating' => number_format($course->averageRating(), 1),
@@ -99,7 +99,7 @@ class CourseController extends Controller
                 'category_name' => $course->category->name,
                 'description' => $course->description,
                 'brief' => $course->brief,
-                'image' => $course->image,
+                'image' => 'http://localhost:8000/images/'.$course->image,
                 'price' => $course->price,
                 'level' => $course->level,
                 'average_rating' => number_format($course->averageRating(), 1),
@@ -141,7 +141,7 @@ class CourseController extends Controller
                 'category_name' => $course->category->name,
                 'description' => $course->description,
                 'brief' => $course->brief,
-                'image' => $course->image,
+                'image' => 'http://localhost:8000/images/'.$course->image,
                 'price' => $course->price,
                 'level' => $course->level,
                 'average_rating' => number_format($course->averageRating(), 1),
@@ -151,7 +151,7 @@ class CourseController extends Controller
         })->values();
 
         return response()->json([
-            'message' => "Successfully retrieved courses with average rating between $minRating and $maxRating",
+            'message' => "Successfully get courses with average rating between $minRating and $maxRating",
             'courses' => $coursesData,
         ]);
     }
@@ -189,7 +189,7 @@ class CourseController extends Controller
                 'category_name' => $course->category->name,
                 'description' => $course->description,
                 'brief' => $course->brief,
-                'image' => $course->image,
+                'image' => 'http://localhost:8000/images/'.$course->image,
                 'price' => $course->price,
                 'level' => $course->level,
                 'average_rating' => number_format($course->averageRating(), 1),
@@ -204,6 +204,42 @@ class CourseController extends Controller
             'current_page' => $enrollments->currentPage(),
             'last_page' => $enrollments->lastPage(),
             'total' => $enrollments->total(),
+        ]);
+    }
+
+    public function getInstructorCourse($instructorId)
+    {
+        $courses = Course::where('instructor_id', $instructorId)->get();
+
+        if (!$courses) {
+            return response()->json([
+                'message' => "courses with id = $instructorId not found",
+            ], 404);
+        }
+
+        $coursesData = $courses->map(function ($course) {
+            return [
+                'id' => $course->id,
+                'name' => $course->name,
+                'slug' => $course->slug,
+                'instructor_id' => $course->instructor_id,
+                'instructor_name' => $course->instructor->name,
+                'category_id' => $course->category_id,
+                'category_name' => $course->category->name,
+                'description' => $course->description,
+                'brief' => $course->brief,
+                'image' => 'http://localhost:8000/images/'.$course->image,
+                'price' => $course->price,
+                'level' => $course->level,
+                'average_rating' => number_format($course->averageRating(), 1),
+                'created_at' => $course->created_at,
+                'updated_at' => $course->updated_at,
+            ];
+        })->values();
+
+        return response()->json([
+            'message' => "Successfully get courses with instructor id = $instructorId",
+            'courses' => $coursesData,
         ]);
     }
 
@@ -230,7 +266,7 @@ class CourseController extends Controller
                 'category_name' => $course->category->name,
                 'description' => $course->description,
                 'brief' => $course->brief,
-                'image' => $course->image,
+                'image' => 'http://localhost:8000/images/'.$course->image,
                 'price' => $course->price,
                 'level' => $course->level,
                 'average_rating' => number_format($course->averageRating(), 1),
@@ -272,9 +308,8 @@ class CourseController extends Controller
 
         // upload image
         $image = $request->file('image');
-        $filename = date('Y-m-d').$image->getClientOriginalName();
-        $path = 'images/'.$filename;
-        Storage::disk('public')->put($path, file_get_contents($image));
+        $image->move(public_path() . '//images/', $image->getClientOriginalName());
+        $imageName = date('Y-m-d').$image->getClientOriginalName();
 
         // create new course
         $course = Course::create([
@@ -284,7 +319,7 @@ class CourseController extends Controller
             'category_id' => $request->category_id,
             'description' => $request->description,
             'brief' => $request->brief,
-            'image' => $filename,
+            'image' => $imageName,
             'level' => $request->level,
             'price' => $request->price
         ]);
