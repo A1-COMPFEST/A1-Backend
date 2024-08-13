@@ -486,7 +486,7 @@ class CourseController extends Controller
                 'category_name' => $course->category ? $course->category->name : 'N/A',
                 'description' => $course->description,
                 'brief' => $course->brief,
-                'image' => $course->image,
+                'image' => 'http://localhost:8000/images/'.$course->image,
                 'price' => $course->price,
                 'level' => $course->level,
                 'average_rating' => number_format($course->averageRating(), 1),

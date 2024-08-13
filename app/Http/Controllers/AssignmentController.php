@@ -19,10 +19,20 @@ class AssignmentController extends Controller
             ], 404);
         }
 
+        $assignmentData = $assignments->map(function ($assignment) {
+            return [
+                'course_id' => $assignment->course_id,
+                'title' => $assignment->title,
+                'description' => $assignment->description,
+                'task' => "http://localhost:8000/assignments/{$assignment->course_id}/{$assignment->task}",
+                'due_date' => $assignment->due_date
+            ];
+        });
+    
         // Return the assignments
         return response()->json([
             'message' => 'Assignments retrieved successfully.',
-            'assignments' => $assignments
+            'assignments' => $assignmentData
         ]);
     }
 
@@ -54,7 +64,7 @@ class AssignmentController extends Controller
         // create new assignment
         $assignment = Assignment::create([
             'course_id' => $course_id,
-            'task' => $request->task,
+            'task' => $taskName,
             'title' => $request->title,
             'description' => $request->description,
             'due_date' => $request->due_date
