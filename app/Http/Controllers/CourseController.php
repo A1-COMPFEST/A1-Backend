@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Course;
 use App\Models\Enrollment;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Validator;
@@ -464,7 +465,7 @@ class CourseController extends Controller
         $courses = $query->paginate($perPage, ['*'], 'page', $currentPage);
 
         // Transform data for response
-        $coursesData = $courses->map(function ($course) {
+        $coursesData = collect($courses)->map(function ($course) {
             return [
                 'id' => $course->id,
                 'name' => $course->name,
