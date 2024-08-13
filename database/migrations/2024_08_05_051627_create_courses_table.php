@@ -18,7 +18,7 @@ return new class extends Migration
             $table->foreignId('instructor_id')->constrained('users')->onDelete('cascade');
             $table->foreignId('category_id')->constrained('categories')->onDelete('cascade');
             $table->text('description');
-            $table->text('syllabus');
+            $table->text('brief');
             $table->string('image');
             $table->enum('level', ['beginner', 'intermediate', 'professional']);
             $table->double('price');
