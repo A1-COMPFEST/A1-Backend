@@ -16,7 +16,6 @@ class Answer extends Model
         'status',
         'grade'
     ];
-    ];
 
     public function assignment() {
         return $this->belongsTo(Assignment::class);
@@ -25,4 +24,4 @@ class Answer extends Model
     public function user() {
         return $this->belongsTo(User::class);
     }
-
+}
