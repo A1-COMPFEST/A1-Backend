@@ -14,7 +14,8 @@ class Answer extends Model
         'user_id',
         'task',
         'status',
-        'grade',
+        'grade'
+    ];
     ];
 
     public function assignment() {
@@ -24,4 +25,4 @@ class Answer extends Model
     public function user() {
         return $this->belongsTo(User::class);
     }
-}
+
