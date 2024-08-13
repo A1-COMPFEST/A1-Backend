@@ -12,10 +12,7 @@ use Illuminate\Support\Facades\Validator;
 
 class CourseController extends Controller
 {
-    public function __construct()
-    {
-        $this->middleware('auth:sanctum')->only(['purchased']);
-    }
+    
 
     // GET POPULAR COURSEs DATA WITH LIMIT=8
     public function popular()
@@ -162,13 +159,7 @@ class CourseController extends Controller
     {
 
         // check if user is authenticated
-        $authenticatedUser = auth()->user();
-
-        if (!$authenticatedUser || $authenticatedUser->id != $user_id) {
-            return response()->json([
-                'message' => 'Unauthorized access to purchased courses data',
-            ], 403); // 403 Forbidden
-        }
+       
         // paginate
         $perPage = 8;
         $currentPage = request()->input('page', 1);

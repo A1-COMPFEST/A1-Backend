@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Answer;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\DB;
 
 class AnswerController extends Controller
 {
@@ -13,19 +14,66 @@ class AnswerController extends Controller
     {
         $answers = Answer::where('assignment_id', $assignment_id)->get();
 
-        $answersData = $answers->map(function($answer) {
+        $answersData = $answers->map(function ($answer) {
             return [
                 'id' => $answer->id,
                 'assignment_id' => $answer->assignment_id,
                 'user_id' => $answer->user_id,
                 'task' => "http://localhost:8000/answers/{$answer->assignment_id}/{$answer->task}",
-                'status'    => $answer->status,
+                'status' => $answer->status,
                 'grade' => $answer->grade
             ];
         });
 
         return response()->json([
             'answers' => $answersData
+        ], 200);
+    }
+
+    // GET ASSIGNMENT DEADLINE
+
+    public function getAssignmentDeadline($assignment_id, $user_id)
+    {
+        $deadline = DB::table('enrollments')
+            ->join('assignments', 'enrollments.course_id', '=', 'assignments.course_id')
+            ->where('assignments.id', $assignment_id)
+            ->where('enrollments.user_id', $user_id)
+            ->select(DB::raw('DATE_ADD(enrollments.created_at, INTERVAL assignments.due_date DAY) as deadline'))
+            ->first();
+
+        // Check if the deadline exists
+        if (!$deadline) {
+            return response()->json([
+                'message' => 'Deadline not found'
+            ], 404);
+        }
+
+        // Return the deadline
+        return response()->json([
+            'deadline' => $deadline->deadline
+        ], 200);
+    }
+
+    // GET ANSWER BY ASSIGNMENT ID AND USER ID
+    public function getAnswer($assignment_id, $user_id)
+    {
+        $answer = Answer::where('assignment_id', $assignment_id)->where('user_id', $user_id)->first();
+
+        if (!$answer) {
+            return response()->json([
+                'message' => 'Answer not found'
+            ], 404);
+        }
+
+        return response()->json([
+            'answer' => [
+                'id' => $answer->id,
+                'assignment_id' => $answer->assignment_id,
+                'user_id' => $answer->user_id,
+                'task' => "http://localhost:8000/answers/{$answer->assignment_id}/{$answer->task}",
+                'status' => $answer->status,
+                'grade' => $answer->grade
+            ]
         ], 200);
     }
 
@@ -88,7 +136,7 @@ class AnswerController extends Controller
             'grade' => $request->input('grade', $answer->grade)
         ];
 
-        if($request->hasFile('task')) {
+        if ($request->hasFile('task')) {
             $task = $request->file('task');
             $originalTaskName = $task->getClientOriginalName();
             $taskName = "$assignment_id-$originalTaskName";

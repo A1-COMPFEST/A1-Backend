@@ -17,6 +17,8 @@ return new class extends Migration
             $table->string('task');
             $table->integer('due_date');
             $table->timestamps();
+            $table->text('description');
+            $table->text('title');
         });
     }
 
