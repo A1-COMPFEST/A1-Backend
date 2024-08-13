@@ -30,7 +30,9 @@ class AssignmentController extends Controller
     public function store(Request $request, $course_id) {
         // define validation rules
         $validator = Validator::make($request->all(), [
-            'task' => 'required',
+            'task' => 'required|file|mimes:pdf,mp4|max:10240',
+            'title' => 'required|string',
+            'description' => 'required|string',
             'due_date' => 'required',
         ]);
 
@@ -42,10 +44,19 @@ class AssignmentController extends Controller
             ], 422);
         }
 
+        // upload file
+        $task = $request->file('task');
+        $originalTaskName = $task->getClientOriginalName();
+        $taskName = "$course_id-$originalTaskName";
+        $destinationPath = public_path('assignments/' . $course_id);
+        $task->move($destinationPath, $taskName);
+
         // create new assignment
         $assignment = Assignment::create([
             'course_id' => $course_id,
             'task' => $request->task,
+            'title' => $request->title,
+            'description' => $request->description,
             'due_date' => $request->due_date
         ]);
 
