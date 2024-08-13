@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('course_id')->constrained('courses')->onDelete('cascade');
             $table->string('task');
-            $table->date('due_date');
+            $table->integer('due_date');
             $table->timestamps();
         });
     }

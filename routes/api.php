@@ -16,6 +16,7 @@ Route::post('/login', [AuthController::class, 'login']); // LOGIN USER
 Route::post('/register/{role}', [AuthController::class, 'register']); // REGISTER USER & INSTRUCTOR
 Route::post('/logout', [AuthController::class, 'logout'])->middleware('user');
 
+Route::post('/courses', [CourseController::class, 'store']); // ADD NEW COURSE
 // User Middleware
 Route::middleware('user')->group(function() {
     // Courses
@@ -27,7 +28,6 @@ Route::middleware('user')->group(function() {
     Route::get('/courses/instructor/{instructor_id}', [CourseController::class, 'getInstructorCourse']); // GET COURSES BY INSTRUCTOR ID
     Route::get('/courses/filter', [CourseController::class, 'filterCourses']);
     Route::get('/courses/{id}', [CourseController::class, 'detail']); // GET DETAIL COURSE BY ID
-    Route::post('/courses', [CourseController::class, 'store']); // ADD NEW COURSE
     Route::patch('/courses/{id}', [CourseController::class, 'update']); // UPDATE COURSE BY ID
     Route::delete('/courses/{id}', [CourseController::class, 'delete']); // DELETE COURSE BY ID
     
@@ -35,7 +35,7 @@ Route::middleware('user')->group(function() {
     Route::get('/courses/{course_id}/contents', [ContentController::class, 'allContents']); // GET ALL CONTENTS DATA
     Route::get('/courses/{course_id}/contents/{id}', [ContentController::class, 'detail']); // GET CONTENT DETAIL BY ID
     Route::post('/courses/{course_id}/contents', [ContentController::class, 'store']); // ADD NEW CONTENT
-    Route::put('/courses/contents/{id}', [ContentController::class, 'update']); // UPDATE CONTENT
+    Route::patch('/courses/{course_id}/contents/{id}', [ContentController::class, 'update']); // UPDATE CONTENT
     Route::delete('/courses/contents/{id}', [ContentController::class, 'delete']); // DELETE CONTENT
     
     // Balance

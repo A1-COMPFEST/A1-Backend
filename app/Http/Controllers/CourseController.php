@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Course;
 use App\Models\Enrollment;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Validator;
@@ -309,7 +310,7 @@ class CourseController extends Controller
         // upload image
         $image = $request->file('image');
         $image->move(public_path() . '//images/', $image->getClientOriginalName());
-        $imageName = date('Y-m-d').$image->getClientOriginalName();
+        $imageName = $image->getClientOriginalName();
 
         // create new course
         $course = Course::create([
@@ -333,17 +334,18 @@ class CourseController extends Controller
     // UPDATE COURSE DATA BY ID
     public function update(Request $request, $id)
     {
-        // find course by id
+    try {
+        // Find course by id
         $course = Course::find($id);
 
-        // check if course exists
+        // Check if course exists
         if (!$course) {
             return response()->json([
                 'message' => 'Course not found'
             ], 404);
         }
 
-        // define validation rules
+        // Define validation rules
         $validator = Validator::make($request->all(), [
             'name' => 'nullable|string',
             'category_id' => 'nullable|exists:categories,id',
@@ -354,7 +356,7 @@ class CourseController extends Controller
             'level' => 'nullable|string'
         ]);
 
-        // // check if validation fails
+        // Check if validation fails
         if ($validator->fails()) {
             return response()->json([
                 'message' => 'Invalid field',
@@ -362,21 +364,16 @@ class CourseController extends Controller
             ], 422);
         }
 
-        // generate slug
-        $slug = str($course->slug);
+        // Generate slug
+        $slug = $course->slug;
 
         if ($request->exists('name')) {
             $name = $request->input('name');
             $slug = Str::slug($name);
             $slug = $this->generateUniqueSlug($slug);
-            dd('ini dalam if'.$slug);
         }
-        
-        
-        // $slug = Str::slug($request->input('name', $course->name));
-        // $slug = $this->generateUniqueSlug($slug);
-        
-        // data for update
+
+        // Data for update
         $data = [
             'name' => $request->input('name', $course->name),
             'slug' => $slug,
@@ -387,22 +384,33 @@ class CourseController extends Controller
             'level' => $request->input('level', $course->level)
         ];
 
-        // handle image upload if provided
+        // Handle image upload if provided
         if ($request->hasFile('image')) {
             $image = $request->file('image');
             $image->move(public_path() . '//images/', $image->getClientOriginalName());
-            $imageName = date('Y-m-d').$image->getClientOriginalName();
+            $imageName = $image->getClientOriginalName();
             $data['image'] = $imageName;
         }
 
-        // update the course
+        // Update the course
         $course->update($data);
 
         return response()->json([
-            'message' => "Successfully update course with id = $id",
+            'message' => "Successfully updated course with id = $id",
             'course' => $course
-        ]);
+        ], 200);
+    } catch (\Exception $e) {
+        // Log the exception for debugging
+        Log::error('Failed to update course: ' . $e->getMessage());
+
+        // Return a response with the error message
+        return response()->json([
+            'message' => 'An error occurred while updating the course.',
+            'error' => $e->getMessage()
+        ], 500);
     }
+    }
+
 
     // DELETE COURSE DATA BY ID
     public function delete($id)

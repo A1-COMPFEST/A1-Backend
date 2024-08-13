@@ -19,7 +19,7 @@ class ContentController extends Controller
                 'course_id' => $content->course_id,
                 'title' => $content->title,
                 'description' => $content->description,
-                'file' => $content->file
+                'file' => "http://localhost:8000/contents/{$content->course_id}/{$content->file}"
             ];
         });
 
@@ -35,7 +35,13 @@ class ContentController extends Controller
 
         return response()->json([
             'message' => "Successfully get content data with id = $id",
-            'content' => $content
+            'content' => [
+                'id' => $content->id,
+                'course_id' => $content->course_id,
+                'title' => $content->title,
+                'description' => $content->description,
+                'file' => "http://localhost:8000/contents/{$content->course_id}/{$content->file}"
+            ]
         ]);
     }
 
@@ -58,14 +64,17 @@ class ContentController extends Controller
 
         // upload file
         $file = $request->file('file');
-        $filePath = $file->move(public_path() . '//contents/', $file->hashName());
+        $originalFileName = $file->getClientOriginalName();
+        $fileName = "$course_id-$originalFileName";
+        $destinationPath = public_path('contents/' . $course_id);
+        $file->move($destinationPath, $fileName);
 
         //create new content
         $content = Content::create([
             'course_id' => $course_id,
             'title' => $request->title,
             'description' => $request->description,
-            'file' => $filePath
+            'file' => $fileName
         ]);
 
         return response()->json([
@@ -80,9 +89,9 @@ class ContentController extends Controller
 
         // define validation rules
         $validator = Validator::make($request->all(), [
-            'title' => 'sometimes|required',
-            'description' => 'sometimes|required',
-            'file' => 'sometimes|required|file|mimes:pdf,mp4|max:10240',
+            'title' => 'nullable|string',
+            'description' => 'nullable|string',
+            'file' => 'nullable|file|mimes:pdf,mp4|max:10240',
         ]);
 
         // check if validation fails
@@ -102,7 +111,11 @@ class ContentController extends Controller
         // handle file upload if provided
         if($request->hasFile('file')) {
             $file = $request->file('file');
-            $filePath = $file->move(public_path() . "/contents/", $file->hashName());
+            $originalFileName = $file->getClientOriginalName();
+            $fileName = "$course_id-$originalFileName";
+            $destinationPath = public_path('contents/' . $course_id);
+            $file->move($destinationPath, $fileName);
+            $data['file'] = $fileName;
         }
 
         $content->update($data);
@@ -114,7 +127,7 @@ class ContentController extends Controller
     }
 
     // DELETE COURSE CONTENT DATA BY ID
-    public function delete($course_id, $id) {
+    public function delete($id) {
         $content = Content::find($id);
 
         Storage::delete('public/contents' . basename($content->image));
