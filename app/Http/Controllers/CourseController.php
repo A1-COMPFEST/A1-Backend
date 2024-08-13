@@ -345,16 +345,16 @@ class CourseController extends Controller
 
         // define validation rules
         $validator = Validator::make($request->all(), [
-            'name' => 'sometimes|required',
-            'category_id' => 'sometimes|required',
-            'description' => 'sometimes|required',
-            'brief' => 'sometimes|required',
-            'image' => 'sometimes|required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-            'price' => 'sometimes|required',
-            'level' => 'sometimes|required'
+            'name' => 'nullable|string',
+            'category_id' => 'nullable|exists:categories,id',
+            'description' => 'nullable|string',
+            'brief' => 'nullable|string',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'price' => 'nullable|numeric',
+            'level' => 'nullable|string'
         ]);
 
-        // check if validation fails
+        // // check if validation fails
         if ($validator->fails()) {
             return response()->json([
                 'message' => 'Invalid field',
@@ -363,14 +363,19 @@ class CourseController extends Controller
         }
 
         // generate slug
-        $slug = str($course)->slug();
+        $slug = str($course->slug);
 
-        if ($request->has('name')) {
+        if ($request->exists('name')) {
             $name = $request->input('name');
             $slug = Str::slug($name);
             $slug = $this->generateUniqueSlug($slug);
+            dd('ini dalam if'.$slug);
         }
-
+        
+        
+        // $slug = Str::slug($request->input('name', $course->name));
+        // $slug = $this->generateUniqueSlug($slug);
+        
         // data for update
         $data = [
             'name' => $request->input('name', $course->name),
@@ -385,8 +390,9 @@ class CourseController extends Controller
         // handle image upload if provided
         if ($request->hasFile('image')) {
             $image = $request->file('image');
-            $imagePath = $image->store('courses', 'public');
-            $data['image'] = $imagePath;
+            $image->move(public_path() . '//images/', $image->getClientOriginalName());
+            $imageName = date('Y-m-d').$image->getClientOriginalName();
+            $data['image'] = $imageName;
         }
 
         // update the course
