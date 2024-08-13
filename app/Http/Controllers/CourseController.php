@@ -11,10 +11,7 @@ use Illuminate\Support\Facades\Validator;
 
 class CourseController extends Controller
 {
-    public function __construct()
-    {
-        $this->middleware('auth:sanctum')->only(['purchased']);
-    }
+  
 
     // GET POPULAR COURSEs DATA WITH LIMIT=8
     public function popular()
@@ -33,7 +30,7 @@ class CourseController extends Controller
                     'category_name' => $course->category->name,
                     'description' => $course->description,
                     'brief' => $course->brief,
-                    'image' => 'http://localhost:8000/images/'.$course->image,
+                    'image' => 'http://localhost:8000/images/' . $course->image,
                     'price' => $course->price,
                     'level' => $course->level,
                     'average_rating' => number_format($course->averageRating(), 1),
@@ -66,7 +63,7 @@ class CourseController extends Controller
                 'category_name' => $course->category ? $course->category->name : 'N/A',
                 'description' => $course->description,
                 'brief' => $course->brief,
-                'image' => 'http://localhost:8000/images/'.$course->image,
+                'image' => 'http://localhost:8000/images/' . $course->image,
                 'price' => $course->price,
                 'level' => $course->level,
                 'average_rating' => number_format($course->averageRating(), 1),
@@ -99,7 +96,7 @@ class CourseController extends Controller
                 'category_name' => $course->category->name,
                 'description' => $course->description,
                 'brief' => $course->brief,
-                'image' => 'http://localhost:8000/images/'.$course->image,
+                'image' => 'http://localhost:8000/images/' . $course->image,
                 'price' => $course->price,
                 'level' => $course->level,
                 'average_rating' => number_format($course->averageRating(), 1),
@@ -141,7 +138,7 @@ class CourseController extends Controller
                 'category_name' => $course->category->name,
                 'description' => $course->description,
                 'brief' => $course->brief,
-                'image' => 'http://localhost:8000/images/'.$course->image,
+                'image' => 'http://localhost:8000/images/' . $course->image,
                 'price' => $course->price,
                 'level' => $course->level,
                 'average_rating' => number_format($course->averageRating(), 1),
@@ -161,13 +158,7 @@ class CourseController extends Controller
     {
 
         // check if user is authenticated
-        $authenticatedUser = auth()->user();
-
-        if (!$authenticatedUser || $authenticatedUser->id != $user_id) {
-            return response()->json([
-                'message' => 'Unauthorized access to purchased courses data',
-            ], 403); // 403 Forbidden
-        }
+        
         // paginate
         $perPage = 8;
         $currentPage = request()->input('page', 1);
@@ -189,7 +180,7 @@ class CourseController extends Controller
                 'category_name' => $course->category->name,
                 'description' => $course->description,
                 'brief' => $course->brief,
-                'image' => 'http://localhost:8000/images/'.$course->image,
+                'image' => 'http://localhost:8000/images/' . $course->image,
                 'price' => $course->price,
                 'level' => $course->level,
                 'average_rating' => number_format($course->averageRating(), 1),
@@ -228,7 +219,7 @@ class CourseController extends Controller
                 'category_name' => $course->category->name,
                 'description' => $course->description,
                 'brief' => $course->brief,
-                'image' => 'http://localhost:8000/images/'.$course->image,
+                'image' => 'http://localhost:8000/images/' . $course->image,
                 'price' => $course->price,
                 'level' => $course->level,
                 'average_rating' => number_format($course->averageRating(), 1),
@@ -266,7 +257,7 @@ class CourseController extends Controller
                 'category_name' => $course->category->name,
                 'description' => $course->description,
                 'brief' => $course->brief,
-                'image' => 'http://localhost:8000/images/'.$course->image,
+                'image' => 'http://localhost:8000/images/' . $course->image,
                 'price' => $course->price,
                 'level' => $course->level,
                 'average_rating' => number_format($course->averageRating(), 1),
@@ -309,7 +300,7 @@ class CourseController extends Controller
         // upload image
         $image = $request->file('image');
         $image->move(public_path() . '//images/', $image->getClientOriginalName());
-        $imageName = date('Y-m-d').$image->getClientOriginalName();
+        $imageName = date('Y-m-d') . $image->getClientOriginalName();
 
         // create new course
         $course = Course::create([
@@ -333,75 +324,81 @@ class CourseController extends Controller
     // UPDATE COURSE DATA BY ID
     public function update(Request $request, $id)
     {
-        // find course by id
-        $course = Course::find($id);
+        try {
+            // Find course by id
+            $course = Course::find($id);
 
-        // check if course exists
-        if (!$course) {
+            // Check if course exists
+            if (!$course) {
+                return response()->json([
+                    'message' => 'Course not found'
+                ], 404);
+            }
+
+            // Define validation rules
+            $validator = Validator::make($request->all(), [
+                'name' => 'nullable|string',
+                'category_id' => 'nullable|exists:categories,id',
+                'description' => 'nullable|string',
+                'brief' => 'nullable|string',
+                'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+                'price' => 'nullable|numeric',
+                'level' => 'nullable|string'
+            ]);
+
+            // Check if validation fails
+            if ($validator->fails()) {
+                return response()->json([
+                    'message' => 'Invalid field',
+                    'errors' => $validator->errors()
+                ], 422);
+            }
+
+            // Generate slug
+            $slug = $course->slug;
+
+            if ($request->exists('name')) {
+                $name = $request->input('name');
+                $slug = Str::slug($name);
+                $slug = $this->generateUniqueSlug($slug);
+            }
+
+            // Data for update
+            $data = [
+                'name' => $request->input('name', $course->name),
+                'slug' => $slug,
+                'category_id' => $request->input('category_id', $course->category_id),
+                'description' => $request->input('description', $course->description),
+                'brief' => $request->input('brief', $course->brief),
+                'price' => $request->input('price', $course->price),
+                'level' => $request->input('level', $course->level)
+            ];
+
+            // Handle image upload if provided
+            if ($request->hasFile('image')) {
+                $image = $request->file('image');
+                $imageName = date('Y-m-d') . $image->getClientOriginalName();
+                $image->move(public_path('images'), $imageName);
+                $data['image'] = $imageName;
+            }
+
+            // Update the course
+            $course->update($data);
+
             return response()->json([
-                'message' => 'Course not found'
-            ], 404);
-        }
+                'message' => "Successfully updated course with id = $id",
+                'course' => $course
+            ], 200);
+        } catch (\Exception $e) {
+            // Log the exception for debugging
+            Log::error('Failed to update course: ' . $e->getMessage());
 
-        // define validation rules
-        $validator = Validator::make($request->all(), [
-            'name' => 'nullable|string',
-            'category_id' => 'nullable|exists:categories,id',
-            'description' => 'nullable|string',
-            'brief' => 'nullable|string',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-            'price' => 'nullable|numeric',
-            'level' => 'nullable|string'
-        ]);
-
-        // // check if validation fails
-        if ($validator->fails()) {
+            // Return a response with the error message
             return response()->json([
-                'message' => 'Invalid field',
-                'errors' => $validator->errors()
-            ], 422);
+                'message' => 'An error occurred while updating the course.',
+                'error' => $e->getMessage()
+            ], 500);
         }
-
-        // generate slug
-        $slug = str($course->slug);
-
-        if ($request->exists('name')) {
-            $name = $request->input('name');
-            $slug = Str::slug($name);
-            $slug = $this->generateUniqueSlug($slug);
-            dd('ini dalam if'.$slug);
-        }
-        
-        
-        // $slug = Str::slug($request->input('name', $course->name));
-        // $slug = $this->generateUniqueSlug($slug);
-        
-        // data for update
-        $data = [
-            'name' => $request->input('name', $course->name),
-            'slug' => $slug,
-            'category_id' => $request->input('category_id', $course->category_id),
-            'description' => $request->input('description', $course->description),
-            'brief' => $request->input('brief', $course->brief),
-            'price' => $request->input('price', $course->price),
-            'level' => $request->input('level', $course->level)
-        ];
-
-        // handle image upload if provided
-        if ($request->hasFile('image')) {
-            $image = $request->file('image');
-            $image->move(public_path() . '//images/', $image->getClientOriginalName());
-            $imageName = date('Y-m-d').$image->getClientOriginalName();
-            $data['image'] = $imageName;
-        }
-
-        // update the course
-        $course->update($data);
-
-        return response()->json([
-            'message' => "Successfully update course with id = $id",
-            'course' => $course
-        ]);
     }
 
     // DELETE COURSE DATA BY ID
