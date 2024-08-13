@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AssignmentController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ContentController;
@@ -27,7 +28,7 @@ Route::middleware('user')->group(function() {
     Route::get('/courses/filter', [CourseController::class, 'filterCourses']);
     Route::get('/courses/{id}', [CourseController::class, 'detail']); // GET DETAIL COURSE BY ID
     Route::post('/courses', [CourseController::class, 'store']); // ADD NEW COURSE
-    Route::put('/courses/{id}', [CourseController::class, 'update']); // UPDATE COURSE BY ID
+    Route::patch('/courses/{id}', [CourseController::class, 'update']); // UPDATE COURSE BY ID
     Route::delete('/courses/{id}', [CourseController::class, 'delete']); // DELETE COURSE BY ID
     
     // Contents
@@ -49,6 +50,9 @@ Route::middleware('user')->group(function() {
     Route::get('/courses/{course_id}/ratings', [RatingController::class, 'getRatingsForCourse']); // GET RATINGS BY COURSE ID
     Route::post('/courses/{course_id}/ratings/{user_id}', [RatingController::class, 'addRatings']); // ADD NEW RATINGS
     
+    // Assignments
+    Route::get('/courses/{course_id}/assignments', [AssignmentController::class, 'getAssignmentByCourseId']);
+    Route::post('/courses/{course_id}/assignments', [AssignmentController::class, 'store']);
 
     // Enrollment
     Route::get('enrollment/{course_id}', [EnrollmentController::class, 'getUsersByCourseId']); // GET ALL USERS ENROLLED IN THE COURSE
