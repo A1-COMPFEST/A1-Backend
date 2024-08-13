@@ -8,4 +8,12 @@ use Illuminate\Database\Eloquent\Model;
 class Answer extends Model
 {
     use HasFactory;
+
+    protected $fillable = [
+        'assignment_id',
+        'user_id',
+        'task',
+        'status',
+        'grade',
+    ];
 }
