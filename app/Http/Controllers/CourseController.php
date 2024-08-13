@@ -71,7 +71,6 @@ class CourseController extends Controller
                 'average_rating' => number_format($course->averageRating(), 1),
                 'created_at' => $course->created_at,
                 'updated_at' => $course->updated_at,
-                'average_rating' => number_format($course->averageRating(), 1),
             ];
         });
 
@@ -105,7 +104,6 @@ class CourseController extends Controller
                 'average_rating' => number_format($course->averageRating(), 1),
                 'created_at' => $course->created_at,
                 'updated_at' => $course->updated_at,
-                'average_rating' => number_format($course->averageRating(), 1),
             ];
         });
 
