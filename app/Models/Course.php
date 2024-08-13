@@ -15,7 +15,7 @@ class Course extends Model
         'instructor_id',
         'category_id',
         'description',
-        'syllabus',
+        'brief',
         'image',
         'level',
         'price',

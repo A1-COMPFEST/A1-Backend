@@ -15,6 +15,7 @@ class CourseController extends Controller
     {
         $this->middleware('auth:sanctum')->only(['purchased']);
     }
+
     // GET POPULAR COURSEs DATA WITH LIMIT=8
     public function popular()
     {
@@ -31,7 +32,7 @@ class CourseController extends Controller
                     'category_id' => $course->category_id,
                     'category_name' => $course->category->name,
                     'description' => $course->description,
-                    'syllabus' => $course->syllabus,
+                    'brief' => $course->brief,
                     'image' => $course->image,
                     'price' => $course->price,
                     'level' => $course->level,
@@ -64,7 +65,7 @@ class CourseController extends Controller
                 'category_id' => $course->category_id,
                 'category_name' => $course->category ? $course->category->name : 'N/A',
                 'description' => $course->description,
-                'syllabus' => $course->syllabus,
+                'brief' => $course->brief,
                 'image' => $course->image,
                 'price' => $course->price,
                 'level' => $course->level,
@@ -97,7 +98,7 @@ class CourseController extends Controller
                 'category_id' => $course->category_id,
                 'category_name' => $course->category->name,
                 'description' => $course->description,
-                'syllabus' => $course->syllabus,
+                'brief' => $course->brief,
                 'image' => $course->image,
                 'price' => $course->price,
                 'level' => $course->level,
@@ -139,7 +140,7 @@ class CourseController extends Controller
                 'category_id' => $course->category_id,
                 'category_name' => $course->category->name,
                 'description' => $course->description,
-                'syllabus' => $course->syllabus,
+                'brief' => $course->brief,
                 'image' => $course->image,
                 'price' => $course->price,
                 'level' => $course->level,
@@ -187,7 +188,7 @@ class CourseController extends Controller
                 'category_id' => $course->category_id,
                 'category_name' => $course->category->name,
                 'description' => $course->description,
-                'syllabus' => $course->syllabus,
+                'brief' => $course->brief,
                 'image' => $course->image,
                 'price' => $course->price,
                 'level' => $course->level,
@@ -228,7 +229,7 @@ class CourseController extends Controller
                 'category_id' => $course->category_id,
                 'category_name' => $course->category->name,
                 'description' => $course->description,
-                'syllabus' => $course->syllabus,
+                'brief' => $course->brief,
                 'image' => $course->image,
                 'price' => $course->price,
                 'level' => $course->level,
@@ -249,7 +250,7 @@ class CourseController extends Controller
             'instructor_id' => 'required|exists:users,id',
             'category_id' => 'required|exists:categories,id',
             'description' => 'required',
-            'syllabus' => 'required',
+            'brief' => 'required',
             'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             'level' => 'required',
             'price' => 'required',
@@ -271,7 +272,9 @@ class CourseController extends Controller
 
         // upload image
         $image = $request->file('image');
-        $imagePath = $image->move(public_path() . '//courses/', $image->hashName());
+        $filename = date('Y-m-d').$image->getClientOriginalName();
+        $path = 'images/'.$filename;
+        Storage::disk('public')->put($path, file_get_contents($image));
 
         // create new course
         $course = Course::create([
@@ -280,8 +283,8 @@ class CourseController extends Controller
             'instructor_id' => $request->instructor_id,
             'category_id' => $request->category_id,
             'description' => $request->description,
-            'syllabus' => $request->syllabus,
-            'image' => $imagePath,
+            'brief' => $request->brief,
+            'image' => $filename,
             'level' => $request->level,
             'price' => $request->price
         ]);
@@ -310,7 +313,7 @@ class CourseController extends Controller
             'name' => 'sometimes|required',
             'category_id' => 'sometimes|required',
             'description' => 'sometimes|required',
-            'syllabus' => 'sometimes|required',
+            'brief' => 'sometimes|required',
             'image' => 'sometimes|required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             'price' => 'sometimes|required',
             'level' => 'sometimes|required'
@@ -339,7 +342,7 @@ class CourseController extends Controller
             'slug' => $slug,
             'category_id' => $request->input('category_id', $course->category_id),
             'description' => $request->input('description', $course->description),
-            'syllabus' => $request->input('syllabus', $course->syllabus),
+            'brief' => $request->input('brief', $course->brief),
             'price' => $request->input('price', $course->price),
             'level' => $request->input('level', $course->level)
         ];
@@ -433,7 +436,7 @@ class CourseController extends Controller
                 'category_id' => $course->category_id,
                 'category_name' => $course->category ? $course->category->name : 'N/A',
                 'description' => $course->description,
-                'syllabus' => $course->syllabus,
+                'brief' => $course->brief,
                 'image' => $course->image,
                 'price' => $course->price,
                 'level' => $course->level,
