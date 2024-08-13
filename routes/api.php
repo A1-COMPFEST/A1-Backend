@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AnswerController;
 use App\Http\Controllers\AssignmentController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CategoryController;
@@ -53,6 +54,10 @@ Route::middleware('user')->group(function() {
     // Assignments
     Route::get('/courses/{course_id}/assignments', [AssignmentController::class, 'getAssignmentByCourseId']);
     Route::post('/courses/{course_id}/assignments', [AssignmentController::class, 'store']);
+
+    // Answer
+    Route::get('/assignments/{assignment_id}/answer', [AnswerController::class, 'getAllAnswers']);
+    Route::post('/assignments/{assignment_id}/answer/{user_id}', [AnswerController::class, 'store']);
 
     // Enrollment
     Route::get('enrollment/{course_id}', [EnrollmentController::class, 'getUsersByCourseId']); // GET ALL USERS ENROLLED IN THE COURSE
