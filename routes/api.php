@@ -56,8 +56,9 @@ Route::middleware('user')->group(function() {
     Route::post('/courses/{course_id}/assignments', [AssignmentController::class, 'store']);
 
     // Answer
-    Route::get('/assignments/{assignment_id}/answer', [AnswerController::class, 'getAllAnswers']);
-    Route::post('/assignments/{assignment_id}/answer/{user_id}', [AnswerController::class, 'store']);
+    Route::get('/assignments/{assignment_id}/answers', [AnswerController::class, 'getAllAnswers']);
+    Route::post('/assignments/{assignment_id}/answers', [AnswerController::class, 'store']);
+    Route::patch('/assignments/{assignment_id/answers/{answer_id}', [AnswerController::class, 'update']);
 
     // Enrollment
     Route::get('enrollment/{course_id}', [EnrollmentController::class, 'getUsersByCourseId']); // GET ALL USERS ENROLLED IN THE COURSE

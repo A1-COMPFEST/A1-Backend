@@ -13,7 +13,7 @@ class ContentController extends Controller
     public function allContents($course_id) {
         $contents = Content::where('course_id', $course_id)->get();
 
-        $contents->map(function($content) {
+        $contentsData = $contents->map(function($content) {
             return [
                 'id' => $content->id,
                 'course_id' => $content->course_id,
@@ -25,7 +25,7 @@ class ContentController extends Controller
 
         return response()->json([
             'message' => "Successfully get courses content data",
-            'contents' => $contents
+            'contents' => $contentsData
         ]);
     }
 
