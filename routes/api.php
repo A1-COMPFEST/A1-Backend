@@ -52,15 +52,16 @@ Route::middleware('user')->group(function() {
     Route::post('/courses/{course_id}/ratings/{user_id}', [RatingController::class, 'addRatings']); // ADD NEW RATINGS
     
     // Assignments
-    Route::get('/courses/{course_id}/assignments', [AssignmentController::class, 'getAssignmentByCourseId']);
-    Route::get('assignments/deadline/{assignment_id}/{user_id}', [AnswerController::class, 'getAssignmentDeadline']);
+    Route::get('/courses/{course_id}/assignments', [AssignmentController::class, 'getAssignmentBycourse_id']); // GET ASSIGNMENT BY COURSE ID
+    Route::get('/assignments/{instructor_id}', [AssignmentController::class, 'getAssignmentByInstructorId']); // GET ASSIGNMENT BY INSTRUCTOR ID
+    Route::get('assignments/deadline/{assignment_id}/{user_id}', [AnswerController::class, 'getAssignmentDeadline']); // GET ASSIGNMENT DEADLINE
     Route::post('/courses/{course_id}/assignments', [AssignmentController::class, 'store']);
     Route::get('assignments/{id}', [AssignmentController::class, 'show']);
 
     // Answer
-    Route::get('/assignments/{assignment_id}/answers/{user_id}', [AnswerController::class, 'getAnswer']);
-    Route::get('/assignments/{assignment_id}/answers', [AnswerController::class, 'getAllAnswers']);
-    Route::post('/assignments/{assignment_id}/answers', [AnswerController::class, 'store']);
+    Route::get('/assignments/{assignment_id}/answers/{user_id}', [AnswerController::class, 'getAnswer']); // GET ANSWER BY ASSIGNMENT ID AND USER ID
+    Route::get('/assignments/{assignment_id}/answers', [AnswerController::class, 'getAllAnswers']); // GET ALL ANSWER BY ASSIGNMENT ID
+    Route::post('/assignments/{assignment_id}/answers', [AnswerController::class, 'store']); // ADD NEW ANSWER
     Route::patch('/assignments/{assignment_id/answers/{answer_id}', [AnswerController::class, 'update']);
 
     // Enrollment
