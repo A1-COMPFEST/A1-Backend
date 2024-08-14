@@ -436,7 +436,7 @@ class CourseController extends Controller
 
     public function filterCourses(Request $request)
     {
-        $query = Course::with(['instructor', 'category']);
+        $query = Course::with(['instructor', 'category'])->get();
 
         // Apply filters if they exist
         if ($request->has('name')) {

@@ -14,7 +14,9 @@ return new class extends Migration
         Schema::create('assignments', function (Blueprint $table) {
             $table->id();
             $table->foreignId('course_id')->constrained('courses')->onDelete('cascade');
+            $table->string('title');
             $table->string('task');
+            $table->text('description');
             $table->integer('due_date');
             $table->timestamps();
             $table->text('description');
