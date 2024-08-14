@@ -9,10 +9,11 @@ use Illuminate\Support\Facades\Validator;
 class AssignmentController extends Controller
 {
     // GET ASSIGNMENT BY COURSE_ID
-    public function getAssignmentByCourseId($courseId) {
+    public function getAssignmentByCourseId($courseId)
+    {
         $assignments = Assignment::where('course_id', $courseId)->get();
 
-         // Check if assignments are found
+        // Check if assignments are found
         if ($assignments->isEmpty()) {
             return response()->json([
                 'message' => 'No assignments found for this course.'
@@ -21,6 +22,7 @@ class AssignmentController extends Controller
 
         $assignmentData = $assignments->map(function ($assignment) {
             return [
+                'id' => $assignment->id,
                 'course_id' => $assignment->course_id,
                 'title' => $assignment->title,
                 'description' => $assignment->description,
@@ -28,16 +30,45 @@ class AssignmentController extends Controller
                 'due_date' => $assignment->due_date
             ];
         });
-    
+
         // Return the assignments
         return response()->json([
             'message' => 'Assignments retrieved successfully.',
             'assignments' => $assignmentData
         ]);
     }
+    public function show($id)
+    {
+        // Retrieve the assignment by its ID
+        $assignment = Assignment::find($id);
+
+        // Check if the assignment exists
+        if (!$assignment) {
+            return response()->json([
+                'message' => 'Assignment not found.'
+            ], 404);
+        }
+
+        // Prepare the assignment data
+        $assignmentData = [
+            'id' => $assignment->id,
+            'course_id' => $assignment->course_id,
+            'title' => $assignment->title,
+            'description' => $assignment->description,
+            'task' => "http://localhost:8000/assignments/{$assignment->course_id}/{$assignment->task}",
+            'due_date' => $assignment->due_date
+        ];
+
+        // Return the assignment data
+        return response()->json([
+            'message' => 'Assignment retrieved successfully.',
+            'assignment' => $assignmentData
+        ]);
+    }
 
     // ADD CONTENT ASSIGNMENT DATA
-    public function store(Request $request, $course_id) {
+    public function store(Request $request, $course_id)
+    {
         // define validation rules
         $validator = Validator::make($request->all(), [
             'task' => 'required|file|mimes:pdf,mp4|max:10240',
@@ -47,7 +78,7 @@ class AssignmentController extends Controller
         ]);
 
         // check if validation fails
-        if($validator->fails()) {
+        if ($validator->fails()) {
             return response()->json([
                 'message' => 'Invalid field',
                 'errors' => $validator->errors()

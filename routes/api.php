@@ -53,9 +53,12 @@ Route::middleware('user')->group(function() {
     
     // Assignments
     Route::get('/courses/{course_id}/assignments', [AssignmentController::class, 'getAssignmentByCourseId']);
+    Route::get('assignments/deadline/{assignment_id}/{user_id}', [AnswerController::class, 'getAssignmentDeadline']);
     Route::post('/courses/{course_id}/assignments', [AssignmentController::class, 'store']);
+    Route::get('assignments/{id}', [AssignmentController::class, 'show']);
 
     // Answer
+    Route::get('/assignments/{assignment_id}/answers/{user_id}', [AnswerController::class, 'getAnswer']);
     Route::get('/assignments/{assignment_id}/answers', [AnswerController::class, 'getAllAnswers']);
     Route::post('/assignments/{assignment_id}/answers', [AnswerController::class, 'store']);
     Route::patch('/assignments/{assignment_id/answers/{answer_id}', [AnswerController::class, 'update']);

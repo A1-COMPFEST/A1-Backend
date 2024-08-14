@@ -19,6 +19,8 @@ return new class extends Migration
             $table->text('description');
             $table->integer('due_date');
             $table->timestamps();
+            $table->text('description');
+            $table->text('title');
         });
     }
 
