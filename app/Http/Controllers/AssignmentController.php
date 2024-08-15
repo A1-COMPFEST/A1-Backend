@@ -158,11 +158,13 @@ class AssignmentController extends Controller
             ], 422);
         }
 
-        $data = [
-            'title' => $request->input('title', $assignment->title),
-            'description' => $request->input('description', $assignment->description),
-            'due_date' => $request->input('due_date', $assignment->due_date)
-        ];
+        // $data = [
+        //     'title' => $request->input('title', $assignment->title),
+        //     'description' => $request->input('description', $assignment->description),
+        //     'due_date' => $request->input('due_date', $assignment->due_date)
+        // ];
+
+        $data = $request->all();
 
         // upload file
         if ($request->hasFile('task')) {
