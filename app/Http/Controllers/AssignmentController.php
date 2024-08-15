@@ -9,9 +9,9 @@ use Illuminate\Support\Facades\Validator;
 class AssignmentController extends Controller
 {
     // GET ASSIGNMENT BY COURSE_ID
-    public function getAssignmentByCourseId($courseId)
+    public function getAssignmentBycourse_id($course_id)
     {
-        $assignments = Assignment::where('course_id', $courseId)->get();
+        $assignments = Assignment::where('course_id', $course_id)->get();
 
         // Check if assignments are found
         if ($assignments->isEmpty()) {
@@ -33,10 +33,40 @@ class AssignmentController extends Controller
 
         // Return the assignments
         return response()->json([
-            'message' => 'Assignments retrieved successfully.',
+            'message' => "Successfully get assignments data for course id = $course_id",
             'assignments' => $assignmentData
         ]);
     }
+
+    // GET ASSIGNMENT BY INSTRUCTOR ID
+    public function getAssignmentByInstructorId($instructor_id){
+        $assignments = Assignment::where('instructor_id',$instructor_id)->get();
+
+        // Check if assignments are found
+        if ($assignments->isEmpty()) {
+            return response()->json([
+                'message' => 'No assignments found for this course.'
+            ], 404);
+        }
+
+        $assignmentData = $assignments->map(function ($assignment) {
+            return [
+                'id' => $assignment->id,
+                'course_id' => $assignment->course_id,
+                'title' => $assignment->title,
+                'description' => $assignment->description,
+                'task' => "http://localhost:8000/assignments/{$assignment->course_id}/{$assignment->task}",
+                'due_date' => $assignment->due_date
+            ];
+        });
+
+        // Return the assignments
+        return response()->json([
+            'message' => "Successfully get assignment data for instructor id = $instructor_id",
+            'assignments' => $assignmentData
+        ]);
+    }
+
     public function show($id)
     {
         // Retrieve the assignment by its ID
