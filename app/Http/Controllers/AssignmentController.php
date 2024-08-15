@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Validator;
 class AssignmentController extends Controller
 {
     // GET ASSIGNMENT BY COURSE_ID
-    public function getAssignmentBycourse_id($course_id)
+    public function getAssignmentByCourseId($course_id)
     {
         $assignments = Assignment::where('course_id', $course_id)->get();
 
