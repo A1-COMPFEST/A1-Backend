@@ -338,13 +338,13 @@ class CourseController extends Controller
 
             // Define validation rules
             $validator = Validator::make($request->all(), [
-                'name' => 'required|string',
-                'category_id' => 'required|exists:categories,id',
-                'description' => 'required|string',
-                'brief' => 'required|string',
-                'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-                'price' => 'required',
-                'level' => 'required|string'
+                'name' => 'string',
+                'category_id' => 'exists:categories,id',
+                'description' => 'string',
+                'brief' => 'string',
+                'image' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+                'price' => 'numeric',
+                'level' => 'string'
             ]);
 
             // // Check if validation fails
@@ -358,7 +358,7 @@ class CourseController extends Controller
             // Generate slug
             $slug = $course->slug;
 
-            if ($request->exists('name')) {
+            if ($request->name) {
                 // $name = $request->input('name');
                 $name = $request->name;
                 $slug = Str::slug($name);
@@ -366,7 +366,7 @@ class CourseController extends Controller
             }
 
             // Data for update
-            $data = [
+            // $data = [
                 // 'name' => $request->input('name', $course->name),
                 // 'slug' => $slug,
                 // 'category_id' => $request->input('category_id', $course->category_id),
@@ -374,14 +374,15 @@ class CourseController extends Controller
                 // 'brief' => $request->input('brief', $course->brief),
                 // 'price' => $request->input('price', $course->price),
                 // 'level' => $request->input('level', $course->level)
-                'name' => $request->name,
-                'slug' => $slug,
-                'category_id' => $request->category_id,
-                'description' => $request->description,
-                'brief' => $request->brief,
-                'price' => $request->price,
-                'level' => $request->level
-            ];
+                // 'name' => $request->name,
+                // 'slug' => $slug,
+                // 'category_id' => $request->category_id,
+                // 'description' => $request->description,
+                // 'brief' => $request->brief,
+                // 'price' => $request->price,
+                // 'level' => $request->level
+            // ];
+            $data = $request->all();
 
             // Handle image upload if provided
             if ($request->hasFile('image')) {
@@ -392,7 +393,7 @@ class CourseController extends Controller
             }
 
             // Update the course
-            $course->update($data);
+            $course->update($request->all());
 
             return response()->json([
                 'message' => "Successfully updated course with id = $id",
@@ -473,7 +474,7 @@ class CourseController extends Controller
 
         $courses = $query->paginate($perPage, ['*'], 'page', $currentPage);
 
-        $coursesData = $courses->map(function ($course) {
+        $coursesData = collect($courses)->map(function ($course) {
             return [
                 'id' => $course->id,
                 'name' => $course->name,
