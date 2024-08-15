@@ -106,4 +106,62 @@ class AssignmentController extends Controller
             'assignment' => $assignment
         ], 201);
     }
+
+    // UPDATE ASSIGNMENT DATA BY ID
+    public function update(Request $request, $course_id, $id)
+    {
+        $assignment = Assignment::find($id);
+        
+        // define validation rules
+        $validator = Validator::make($request->all(), [
+            'task' => 'nullable|file|mimes:pdf,mp4|max:10240',
+            'title' => 'nullable|string',
+            'description' => 'nullable|string',
+            'due_date' => 'nullable',
+        ]);
+
+        // check if validation fails
+        if ($validator->fails()) {
+            return response()->json([
+                'message' => 'Invalid field',
+                'errors' => $validator->errors()
+            ], 422);
+        }
+
+        $data = [
+            'title' => $request->input('title', $assignment->title),
+            'description' => $request->input('description', $assignment->description),
+            'due_date' => $request->input('due_date', $assignment->due_date)
+        ];
+
+        // upload file
+        if ($request->hasFile('task')) {
+            $task = $request->file('task');
+            $originalTaskName = $task->getClientOriginalName();
+            $taskName = "$course_id-$originalTaskName";
+            $destinationPath = public_path('assignments/' . $course_id);
+            $task->move($destinationPath, $taskName);
+            $data['task'] = $taskName;
+        }
+
+        // create new assignment
+        $assignment->update($data);
+
+        return response()->json([
+            'message' => "Successfully update new assignment for course with id = $id",
+            'assignment' => $assignment
+        ], 201);
+    }
+
+    // DELETE ASSIGNMENT DATA BY ID
+    public function delete($id)
+    {
+        $assignment = Assignment::find($id);
+
+        $assignment->delete();
+
+        return response()->json([
+            'message' => "Successfully delete assignment with id = $id",
+        ]);
+    }
 }

@@ -24,7 +24,7 @@ Route::middleware('user')->group(function() {
     Route::get('/courses/category/{category_id}', [CourseController::class, 'getCoursesByCategoryId']); // GET COURSES BY CATEGORY ID
     Route::get('/courses/level/{level}', [CourseController::class, 'getCoursesByLevel']); // GET COURSES BY DIFFICULTY LEVEL
     Route::get('/courses/ratings', [CourseController::class, 'getCoursesByRatingRange']); // GET COURSES BY RATINGS RANGE
-    Route::get('/courses/enrolled/{user_id}', [CourseController::class, 'purchased']); // GET PURCHASED COURSES
+    Route::get('/courses/enrolled/{user_id}', [CourseController::class, 'purchased']); // GET
     Route::get('/courses/instructor/{instructor_id}', [CourseController::class, 'getInstructorCourse']); // GET COURSES BY INSTRUCTOR ID
     Route::get('/courses/filter', [CourseController::class, 'filterCourses']);
     Route::get('/courses/{id}', [CourseController::class, 'detail']); // GET DETAIL COURSE BY ID
@@ -53,15 +53,17 @@ Route::middleware('user')->group(function() {
     
     // Assignments
     Route::get('/courses/{course_id}/assignments', [AssignmentController::class, 'getAssignmentByCourseId']);
-    Route::get('assignments/deadline/{assignment_id}/{user_id}', [AnswerController::class, 'getAssignmentDeadline']);
+    Route::get('/assignments/deadline/{assignment_id}/{user_id}', [AnswerController::class, 'getAssignmentDeadline']);
+    Route::get('/assignments/{id}', [AssignmentController::class, 'show']);
     Route::post('/courses/{course_id}/assignments', [AssignmentController::class, 'store']);
-    Route::get('assignments/{id}', [AssignmentController::class, 'show']);
+    Route::patch('/courses/{course_id}/assignments/{id}', [AssignmentController::class, 'update']);
+    Route::delete('/assignments/{id}', [AssignmentController::class, 'delete']);
 
     // Answer
     Route::get('/assignments/{assignment_id}/answers/{user_id}', [AnswerController::class, 'getAnswer']);
     Route::get('/assignments/{assignment_id}/answers', [AnswerController::class, 'getAllAnswers']);
     Route::post('/assignments/{assignment_id}/answers', [AnswerController::class, 'store']);
-    Route::patch('/assignments/{assignment_id/answers/{answer_id}', [AnswerController::class, 'update']);
+    Route::patch('/assignments/{assignment_id/answers/{answer_id}', [AnswerController::class, 'update']); // UPDATE TASK, STATUS, GRADE 
 
     // Enrollment
     Route::get('enrollment/{course_id}', [EnrollmentController::class, 'getUsersByCourseId']); // GET ALL USERS ENROLLED IN THE COURSE
