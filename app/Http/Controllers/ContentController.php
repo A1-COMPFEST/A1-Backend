@@ -127,7 +127,8 @@ class ContentController extends Controller
     }
 
     // DELETE COURSE CONTENT DATA BY ID
-    public function delete($id) {
+    public function delete($id)
+    {
         $content = Content::find($id);
 
         Storage::delete('public/contents' . basename($content->image));
