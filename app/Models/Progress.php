@@ -10,6 +10,7 @@ class Progress extends Model
     use HasFactory;
 
     protected $fillable = [
+        'course_id',
         'content_id',
         'user_id',
         'isFinish'

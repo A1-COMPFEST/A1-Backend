@@ -7,6 +7,7 @@ use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ContentController;
 use App\Http\Controllers\CourseController;
 use App\Http\Controllers\EnrollmentController;
+use App\Http\Controllers\ProgressController;
 use App\Http\Controllers\RatingController;
 use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
@@ -69,4 +70,9 @@ Route::middleware('user')->group(function() {
     // Enrollment
     Route::get('enrollment/{course_id}', [EnrollmentController::class, 'getUsersByCourseId']); // GET ALL USERS ENROLLED IN THE COURSE
     Route::post('/enrollment/{course_id}/{user_id}', [EnrollmentController::class, 'store']); // ADD NEW ENROLLMENT
+    
+    // Progress
+    Route::get('/progress/contents/{content_id}/{user_id}', [ProgressController::class, 'checkProgress']); // GET USER PROGRESS IN CONTENT
+    Route::get('/progress/courses/{course_id}/{user_id}', [ProgressController::class, 'countProgress']); // GET USER PROGRESS
+    Route::post('/progress/{course_id}/{content_id}/{user_id}', [ProgressController::class, 'store']); // ADD NEW USER PROGRESS
 });
