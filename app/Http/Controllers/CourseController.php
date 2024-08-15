@@ -359,20 +359,28 @@ class CourseController extends Controller
             $slug = $course->slug;
 
             if ($request->exists('name')) {
-                $name = $request->input('name');
+                // $name = $request->input('name');
+                $name = $request->name;
                 $slug = Str::slug($name);
                 $slug = $this->generateUniqueSlug($slug);
             }
 
             // Data for update
             $data = [
-                'name' => $request->input('name', $course->name),
+                // 'name' => $request->input('name', $course->name),
+                // 'slug' => $slug,
+                // 'category_id' => $request->input('category_id', $course->category_id),
+                // 'description' => $request->input('description', $course->description),
+                // 'brief' => $request->input('brief', $course->brief),
+                // 'price' => $request->input('price', $course->price),
+                // 'level' => $request->input('level', $course->level)
+                'name' => $request->name,
                 'slug' => $slug,
-                'category_id' => $request->input('category_id', $course->category_id),
-                'description' => $request->input('description', $course->description),
-                'brief' => $request->input('brief', $course->brief),
-                'price' => $request->input('price', $course->price),
-                'level' => $request->input('level', $course->level)
+                'category_id' => $request->category_id,
+                'description' => $request->description,
+                'brief' => $request->brief,
+                'price' => $request->price,
+                'level' => $request->level
             ];
 
             // Handle image upload if provided
@@ -467,8 +475,8 @@ class CourseController extends Controller
         
         $courses = $query->paginate($perPage, ['*'], 'page', $currentPage);
 
-        
-        $coursesData = $courses->map(function ($course) {
+        // Transform data for response
+        $coursesData = collect($courses)->map(function ($course) {
             return [
                 'id' => $course->id,
                 'name' => $course->name,
