@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\Validator;
 
 class CourseController extends Controller
 {
-    
+
 
     // GET POPULAR COURSEs DATA WITH LIMIT=8
     public function popular()
@@ -31,7 +31,7 @@ class CourseController extends Controller
                     'category_name' => $course->category->name,
                     'description' => $course->description,
                     'brief' => $course->brief,
-                    'image' => 'http://localhost:8000/images/'.$course->image,
+                    'image' => 'http://localhost:8000/images/' . $course->image,
                     'price' => $course->price,
                     'level' => $course->level,
                     'average_rating' => number_format($course->averageRating(), 1),
@@ -64,7 +64,7 @@ class CourseController extends Controller
                 'category_name' => $course->category ? $course->category->name : 'N/A',
                 'description' => $course->description,
                 'brief' => $course->brief,
-                'image' => 'http://localhost:8000/images/'.$course->image,
+                'image' => 'http://localhost:8000/images/' . $course->image,
                 'price' => $course->price,
                 'level' => $course->level,
                 'average_rating' => number_format($course->averageRating(), 1),
@@ -97,7 +97,7 @@ class CourseController extends Controller
                 'category_name' => $course->category->name,
                 'description' => $course->description,
                 'brief' => $course->brief,
-                'image' => 'http://localhost:8000/images/'.$course->image,
+                'image' => 'http://localhost:8000/images/' . $course->image,
                 'price' => $course->price,
                 'level' => $course->level,
                 'average_rating' => number_format($course->averageRating(), 1),
@@ -139,7 +139,7 @@ class CourseController extends Controller
                 'category_name' => $course->category->name,
                 'description' => $course->description,
                 'brief' => $course->brief,
-                'image' => 'http://localhost:8000/images/'.$course->image,
+                'image' => 'http://localhost:8000/images/' . $course->image,
                 'price' => $course->price,
                 'level' => $course->level,
                 'average_rating' => number_format($course->averageRating(), 1),
@@ -159,7 +159,7 @@ class CourseController extends Controller
     {
 
         // check if user is authenticated
-       
+
         // paginate
         $perPage = 8;
         $currentPage = request()->input('page', 1);
@@ -181,7 +181,7 @@ class CourseController extends Controller
                 'category_name' => $course->category->name,
                 'description' => $course->description,
                 'brief' => $course->brief,
-                'image' => 'http://localhost:8000/images/'.$course->image,
+                'image' => 'http://localhost:8000/images/' . $course->image,
                 'price' => $course->price,
                 'level' => $course->level,
                 'average_rating' => number_format($course->averageRating(), 1),
@@ -220,7 +220,7 @@ class CourseController extends Controller
                 'category_name' => $course->category->name,
                 'description' => $course->description,
                 'brief' => $course->brief,
-                'image' => 'http://localhost:8000/images/'.$course->image,
+                'image' => 'http://localhost:8000/images/' . $course->image,
                 'price' => $course->price,
                 'level' => $course->level,
                 'average_rating' => number_format($course->averageRating(), 1),
@@ -258,7 +258,7 @@ class CourseController extends Controller
                 'category_name' => $course->category->name,
                 'description' => $course->description,
                 'brief' => $course->brief,
-                'image' => 'http://localhost:8000/images/'.$course->image,
+                'image' => 'http://localhost:8000/images/' . $course->image,
                 'price' => $course->price,
                 'level' => $course->level,
                 'average_rating' => number_format($course->averageRating(), 1),
@@ -436,7 +436,8 @@ class CourseController extends Controller
 
     public function filterCourses(Request $request)
     {
-        $query = Course::with(['instructor', 'category'])->get();
+        
+        $query = Course::with(['instructor', 'category']);
 
         // Apply filters if they exist
         if ($request->has('name')) {
@@ -449,7 +450,7 @@ class CourseController extends Controller
 
         if ($request->has('difficulty')) {
             $difficulties = explode(',', $request->input('difficulty'));
-            $query->whereIn('courses.level', $difficulties);
+            $query->whereIn('level', $difficulties);
         }
 
         if ($request->has('min_rating')) {
@@ -459,13 +460,14 @@ class CourseController extends Controller
             });
         }
 
-        // Hardcoded pagination to 10 items per page
-        $perPage = 3;
+        // Hardcoded pagination to 8 items per page
+        $perPage = 8;
         $currentPage = $request->input('page', 1); // Default to page 1 if not provided
 
+        
         $courses = $query->paginate($perPage, ['*'], 'page', $currentPage);
 
-        // Transform data for response
+        
         $coursesData = $courses->map(function ($course) {
             return [
                 'id' => $course->id,
@@ -477,7 +479,7 @@ class CourseController extends Controller
                 'category_name' => $course->category ? $course->category->name : 'N/A',
                 'description' => $course->description,
                 'brief' => $course->brief,
-                'image' => 'http://localhost:8000/images/'.$course->image,
+                'image' => 'http://localhost:8000/images/' . $course->image,
                 'price' => $course->price,
                 'level' => $course->level,
                 'average_rating' => number_format($course->averageRating(), 1),
