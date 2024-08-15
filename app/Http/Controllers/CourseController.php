@@ -444,10 +444,9 @@ class CourseController extends Controller
 
     public function filterCourses(Request $request)
     {
-        
         $query = Course::with(['instructor', 'category']);
 
-        // Apply filters if they exist
+       
         if ($request->has('name')) {
             $query->where('name', 'LIKE', '%' . $request->input('name') . '%');
         }
@@ -468,15 +467,13 @@ class CourseController extends Controller
             });
         }
 
-        // Hardcoded pagination to 8 items per page
-        $perPage = 8;
-        $currentPage = $request->input('page', 1); // Default to page 1 if not provided
-
         
+        $perPage = 8;
+        $currentPage = $request->input('page', 1); 
+
         $courses = $query->paginate($perPage, ['*'], 'page', $currentPage);
 
-        // Transform data for response
-        $coursesData = collect($courses)->map(function ($course) {
+        $coursesData = $courses->map(function ($course) {
             return [
                 'id' => $course->id,
                 'name' => $course->name,
