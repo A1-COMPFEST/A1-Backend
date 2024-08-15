@@ -325,81 +325,81 @@ class CourseController extends Controller
     // UPDATE COURSE DATA BY ID
     public function update(Request $request, $id)
     {
-    try {
-        // Find course by id
-        $course = Course::find($id);
+        try {
+            // Find course by id
+            $course = Course::find($id);
 
-        // Check if course exists
-        if (!$course) {
+            // Check if course exists
+            if (!$course) {
+                return response()->json([
+                    'message' => 'Course not found'
+                ], 404);
+            }
+
+            // Define validation rules
+            $validator = Validator::make($request->all(), [
+                'name' => 'required|string',
+                'category_id' => 'required|exists:categories,id',
+                'description' => 'required|string',
+                'brief' => 'required|string',
+                'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+                'price' => 'required',
+                'level' => 'required|string'
+            ]);
+
+            // // Check if validation fails
+            if ($validator->fails()) {
+                return response()->json([
+                    'message' => 'Invalid field',
+                    'errors' => $validator->errors()
+                ], 422);
+            }
+
+            // Generate slug
+            $slug = $course->slug;
+
+            if ($request->exists('name')) {
+                $name = $request->input('name');
+                $slug = Str::slug($name);
+                $slug = $this->generateUniqueSlug($slug);
+            }
+
+            // Data for update
+            $data = [
+                'name' => $request->input('name', $course->name),
+                'slug' => $slug,
+                'category_id' => $request->input('category_id', $course->category_id),
+                'description' => $request->input('description', $course->description),
+                'brief' => $request->input('brief', $course->brief),
+                'price' => $request->input('price', $course->price),
+                'level' => $request->input('level', $course->level)
+            ];
+
+            // Handle image upload if provided
+            if ($request->hasFile('image')) {
+                $image = $request->file('image');
+                $image->move(public_path() . '//images/', $image->getClientOriginalName());
+                $imageName = $image->getClientOriginalName();
+                $data['image'] = $imageName;
+            }
+
+            // Update the course
+            $course->update($data);
+
             return response()->json([
-                'message' => 'Course not found'
-            ], 404);
-        }
+                'message' => "Successfully updated course with id = $id",
+                'course' => $course
+            ], 200);
+        } catch (\Exception $e) {
+            // Log the exception for debugging
+            Log::error('Failed to update course: ' . $e->getMessage());
 
-        // Define validation rules
-        $validator = Validator::make($request->all(), [
-            'name' => 'nullable|string',
-            'category_id' => 'nullable|exists:categories,id',
-            'description' => 'nullable|string',
-            'brief' => 'nullable|string',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-            'price' => 'nullable|numeric',
-            'level' => 'nullable|string'
-        ]);
-
-        // Check if validation fails
-        if ($validator->fails()) {
+            // Return a response with the error message
             return response()->json([
-                'message' => 'Invalid field',
-                'errors' => $validator->errors()
-            ], 422);
+                'message' => 'An error occurred while updating the course.',
+                'error' => $e->getMessage()
+            ], 500);
         }
-
-        // Generate slug
-        $slug = $course->slug;
-
-        if ($request->exists('name')) {
-            $name = $request->input('name');
-            $slug = Str::slug($name);
-            $slug = $this->generateUniqueSlug($slug);
-        }
-
-        // Data for update
-        $data = [
-            'name' => $request->input('name', $course->name),
-            'slug' => $slug,
-            'category_id' => $request->input('category_id', $course->category_id),
-            'description' => $request->input('description', $course->description),
-            'brief' => $request->input('brief', $course->brief),
-            'price' => $request->input('price', $course->price),
-            'level' => $request->input('level', $course->level)
-        ];
-
-        // Handle image upload if provided
-        if ($request->hasFile('image')) {
-            $image = $request->file('image');
-            $image->move(public_path() . '//images/', $image->getClientOriginalName());
-            $imageName = $image->getClientOriginalName();
-            $data['image'] = $imageName;
-        }
-
-        // Update the course
-        $course->update($data);
-
-        return response()->json([
-            'message' => "Successfully updated course with id = $id",
-            'course' => $course
-        ], 200);
-    } catch (\Exception $e) {
-        // Log the exception for debugging
-        Log::error('Failed to update course: ' . $e->getMessage());
-
-        // Return a response with the error message
-        return response()->json([
-            'message' => 'An error occurred while updating the course.',
-            'error' => $e->getMessage()
-        ], 500);
-    }
     }
 
 
@@ -436,7 +436,7 @@ class CourseController extends Controller
 
     public function filterCourses(Request $request)
     {
-        $query = Course::with(['instructor', 'category']);
+        $query = Course::with(['instructor', 'category'])->get();
 
         // Apply filters if they exist
         if ($request->has('name')) {
