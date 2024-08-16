@@ -31,7 +31,7 @@ class CourseController extends Controller
                     'category_name' => $course->category->name,
                     'description' => $course->description,
                     'brief' => $course->brief,
-                    'image' => 'http://localhost:8000/images/' . $course->image,
+                    'image' => env('BASE_URL') . $course->image,
                     'price' => $course->price,
                     'level' => $course->level,
                     'average_rating' => number_format($course->averageRating(), 1),
