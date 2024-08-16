@@ -367,20 +367,20 @@ class CourseController extends Controller
 
             // Data for update
             // $data = [
-                // 'name' => $request->input('name', $course->name),
-                // 'slug' => $slug,
-                // 'category_id' => $request->input('category_id', $course->category_id),
-                // 'description' => $request->input('description', $course->description),
-                // 'brief' => $request->input('brief', $course->brief),
-                // 'price' => $request->input('price', $course->price),
-                // 'level' => $request->input('level', $course->level)
-                // 'name' => $request->name,
-                // 'slug' => $slug,
-                // 'category_id' => $request->category_id,
-                // 'description' => $request->description,
-                // 'brief' => $request->brief,
-                // 'price' => $request->price,
-                // 'level' => $request->level
+            // 'name' => $request->input('name', $course->name),
+            // 'slug' => $slug,
+            // 'category_id' => $request->input('category_id', $course->category_id),
+            // 'description' => $request->input('description', $course->description),
+            // 'brief' => $request->input('brief', $course->brief),
+            // 'price' => $request->input('price', $course->price),
+            // 'level' => $request->input('level', $course->level)
+            // 'name' => $request->name,
+            // 'slug' => $slug,
+            // 'category_id' => $request->category_id,
+            // 'description' => $request->description,
+            // 'brief' => $request->brief,
+            // 'price' => $request->price,
+            // 'level' => $request->level
             // ];
             $data = $request->all();
 
@@ -447,7 +447,6 @@ class CourseController extends Controller
     {
         $query = Course::with(['instructor', 'category']);
 
-       
         if ($request->has('name')) {
             $query->where('name', 'LIKE', '%' . $request->input('name') . '%');
         }
@@ -468,13 +467,12 @@ class CourseController extends Controller
             });
         }
 
-        
         $perPage = 8;
-        $currentPage = $request->input('page', 1); 
+        $currentPage = $request->input('page', 1);
 
         $courses = $query->paginate($perPage, ['*'], 'page', $currentPage);
 
-        $coursesData = collect($courses)->map(function ($course) {
+        $coursesData = $courses->map(function ($course) {
             return [
                 'id' => $course->id,
                 'name' => $course->name,
