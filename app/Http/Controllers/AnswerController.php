@@ -19,7 +19,7 @@ class AnswerController extends Controller
                 'id' => $answer->id,
                 'assignment_id' => $answer->assignment_id,
                 'user_id' => $answer->user_id,
-                'task' => "http://localhost:8000/answers/{$answer->assignment_id}/{$answer->task}",
+                'task' => env('BASE_URL') . 'answers/' . $answer->assignment_id . '/' . $answer->task,
                 'status' => $answer->status,
                 'grade' => $answer->grade
             ];
@@ -70,7 +70,7 @@ class AnswerController extends Controller
                 'id' => $answer->id,
                 'assignment_id' => $answer->assignment_id,
                 'user_id' => $answer->user_id,
-                'task' => "http://localhost:8000/answers/{$answer->assignment_id}/{$answer->task}",
+                'task' => env('BASE_URL') . 'answers/' . "{$answer->assignment_id}/{$answer->task}",
                 'status' => $answer->status,
                 'grade' => $answer->grade
             ]
@@ -137,7 +137,7 @@ class AnswerController extends Controller
         if ($request->has('grade')) {
             $grade = $request->input('grade');
 
-            if ($grade < 70 ) {
+            if ($grade < 70) {
                 $data['status'] = 'revision';
             } else {
                 $data['status'] = 'completed';

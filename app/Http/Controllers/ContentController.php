@@ -19,7 +19,7 @@ class ContentController extends Controller
                 'course_id' => $content->course_id,
                 'title' => $content->title,
                 'description' => $content->description,
-                'file' => "http://localhost:8000/contents/{$content->course_id}/{$content->file}"
+                'file' => env('BASE_URL') . 'contents/' . "{$content->course_id}/{$content->file}"
             ];
         });
 
@@ -40,7 +40,7 @@ class ContentController extends Controller
                 'course_id' => $content->course_id,
                 'title' => $content->title,
                 'description' => $content->description,
-                'file' => "http://localhost:8000/contents/{$content->course_id}/{$content->file}"
+                'file' => env('BASE_URL') . 'contents/' . "{$content->course_id}/{$content->file}"
             ]
         ]);
     }
