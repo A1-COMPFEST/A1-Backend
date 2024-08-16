@@ -26,7 +26,7 @@ class AssignmentController extends Controller
                 'course_id' => $assignment->course_id,
                 'title' => $assignment->title,
                 'description' => $assignment->description,
-                'task' => env('BASE_URL') . 'assignmenmts/' . "{$assignment->course_id}/{$assignment->task}",
+                'task' => env('BASE_URL') . 'assignments/' . "{$assignment->course_id}/{$assignment->task}",
                 'due_date' => $assignment->due_date
             ];
         });
@@ -55,7 +55,7 @@ class AssignmentController extends Controller
                 'course_id' => $assignment->course_id,
                 'title' => $assignment->title,
                 'description' => $assignment->description,
-                'task' => env('BASE_URL') . 'assignmenmts/' . "{$assignment->course_id}/{$assignment->task}",
+                'task' => env('BASE_URL') . 'assignments/' . "{$assignment->course_id}/{$assignment->task}",
                 'due_date' => $assignment->due_date
             ];
         });
@@ -85,7 +85,7 @@ class AssignmentController extends Controller
             'course_id' => $assignment->course_id,
             'title' => $assignment->title,
             'description' => $assignment->description,
-            'task' => env('BASE_URL') . 'assignmenmts/' . "{$assignment->course_id}/{$assignment->task}",
+            'task' => env('BASE_URL') . 'assignments/' . "{$assignment->course_id}/{$assignment->task}",
             'due_date' => $assignment->due_date
         ];
 
