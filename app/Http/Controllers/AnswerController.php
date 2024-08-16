@@ -120,7 +120,6 @@ class AnswerController extends Controller
 
         $validator = Validator::make($request->all(), [
             'task' => 'nullable|file|mimes:pdf,mp4|max:10240',
-            'status' => 'nullable',
             'grade' => 'nullable|numeric'
         ]);
 
@@ -132,9 +131,18 @@ class AnswerController extends Controller
         }
 
         $data = [
-            'status' => $request->input('status', $answer->status),
             'grade' => $request->input('grade', $answer->grade)
         ];
+
+        if ($request->has('grade')) {
+            $grade = $request->input('grade');
+
+            if ($grade < 70 ) {
+                $data['status'] = 'revision';
+            } else {
+                $data['status'] = 'completed';
+            }
+        }
 
         if ($request->hasFile('task')) {
             $task = $request->file('task');

@@ -16,7 +16,6 @@ class ProgressController extends Controller
             'isFinish' => 'required|boolean'
         ]);
 
-        // check if validation fails
         if($validator->fails()) {
             return response()->json([
                 'message' => 'Invalid field',
@@ -24,15 +23,15 @@ class ProgressController extends Controller
             ], 422);
         }
 
-        $progress = Progress::create([
-            'course_id' => $course_id,
-            'content_id' => $content_id,
-            'user_id' => $user_id,
-            'isFinish' => $request->isFinish
-        ]);
+        $progress = Progress::updateOrCreate(
+            ['course_id' => $course_id, 'content_id' => $content_id, 'user_id' => $user_id],
+            ['isFinish' => $request->isFinish]
+        );
+
+        $action = $progress->wasRecentlyCreated ? 'created' : 'updated';
 
         return response()->json([
-            'message' => "Successfully created new progress for course with id = $course_id",
+            'message' => "Successfully $action progress for course with id = $course_id",
             'progress' => $progress
         ], 201);
     }
@@ -80,5 +79,26 @@ class ProgressController extends Controller
             'completed_contents' => $completedContents,
             'progress_percentage' => $progressPercentage]
         ]);
+    }
+
+    public function show($course_id, $content_id, $user_id)
+    {
+        $progress = Progress::where([
+            'course_id' => $course_id,
+            'content_id' => $content_id,
+            'user_id' => $user_id
+        ])->first();
+
+        if (!$progress) {
+            return response()->json([
+                'message' => 'Progress not found',
+                'progress' => ['isFinish' => false]
+            ], 404);
+        }
+
+        return response()->json([
+            'message' => 'Progress found',
+            'progress' => $progress
+        ], 200);
     }
 }

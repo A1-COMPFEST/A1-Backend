@@ -393,7 +393,7 @@ class CourseController extends Controller
             }
 
             // Update the course
-            $course->update($request->all());
+            $course->update($data);
 
             return response()->json([
                 'message' => "Successfully updated course with id = $id",

@@ -76,4 +76,5 @@ Route::middleware('user')->group(function() {
     Route::get('/progress/contents/{content_id}/{user_id}', [ProgressController::class, 'checkProgress']); // GET USER PROGRESS IN CONTENT
     Route::get('/progress/courses/{course_id}/{user_id}', [ProgressController::class, 'countProgress']); // GET USER PROGRESS
     Route::post('/progress/{course_id}/{content_id}/{user_id}', [ProgressController::class, 'store']); // ADD NEW USER PROGRESS
+    Route::get('/progress/{course_id}/{content_id}/{user_id}', [ProgressController::class, 'show']);
 });
