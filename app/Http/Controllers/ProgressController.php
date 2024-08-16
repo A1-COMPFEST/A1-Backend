@@ -43,7 +43,7 @@ class ProgressController extends Controller
         $progress = Progress::where('content_id', $content_id)
             ->where('user_id', $user_id)
             ->first();
-        
+
             if ($progress) {
                 return response()->json([
                     'message' => 'Successfully get user progress for content with id = ' . $content_id,
